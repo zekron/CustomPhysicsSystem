@@ -79,17 +79,14 @@ namespace J2P
 			int row = Mathf.FloorToInt( ( center.y - _worldRect.yMin ) / gridsize.y );
 			int column = Mathf.FloorToInt( ( center.x - _worldRect.xMin ) / gridsize.x );
 
-			int tempRow = row;
-			int tempColumn = column;
+            var storeDepth = posInfo.storeDepth = depth;
 
-			var storeDepth = posInfo.storeDepth = depth;
-
-			for (int i = 0; i < depth; i++)
-			{
-				storeDepth--;
-				posInfo.posInDepths[storeDepth].rowIndex = (row >> i) & 1;
-				posInfo.posInDepths[storeDepth].columnIndex = (column >> i) & 1;
-			}
+            for (int i = 0; i < depth; i++)
+            {
+                storeDepth--;
+                posInfo.posInDepths[storeDepth].rowIndex = (row >> i) & 1;
+                posInfo.posInDepths[storeDepth].columnIndex = (column >> i) & 1;
+            }
 		}
 
 		public void UpdateItem( IQuadTreeItem item )
