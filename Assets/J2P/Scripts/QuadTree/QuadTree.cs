@@ -84,8 +84,8 @@ namespace J2P
             for (int i = 0; i < depth; i++)
             {
                 storeDepth--;
-                posInfo.posInDepths[storeDepth].rowIndex = ((row >> i) & 1) == 1 ? 1 : 0;
-                posInfo.posInDepths[storeDepth].columnIndex = ((column >> i) & 1) == 1 ? 1 : 0;
+                posInfo.posInDepths[storeDepth].rowIndex = (row >> i) & 1;
+                posInfo.posInDepths[storeDepth].columnIndex = (column >> i) & 1;
             }
 		}
 
