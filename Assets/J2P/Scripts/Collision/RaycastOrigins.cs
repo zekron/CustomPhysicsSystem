@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace J2P
+namespace CustomPhysics2D
 {
 	public struct RaycastOrigins
 	{

@@ -1,20 +1,33 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace J2P
+namespace CustomPhysics2D
 {
-	public interface IQuadTreeItem
-	{
-		Vector2 size { get; }
-
-		Vector2 center { get; }
-
-		Rect rect { get; }
-
-		Collider2D selfCollider { get;}
-
-		PositionInQuadTree lastPosInQuadTree { get; set; }
-
-		PositionInQuadTree currentPosInQuadTree { get; set; }
-	}
+    public interface IQuadTreeItem
+    {
+        Vector2 Size
+        {
+            get;
+        }
+        Vector2 Center
+        {
+            get;
+        }
+        Rect ItemRect
+        {
+            get;
+        }
+        Collider2D SelfCollider
+        {
+            get;
+        }
+        PositionInQuadTree LastPosInQuadTree
+        {
+            get; set;
+        }
+        PositionInQuadTree CurrentPosInQuadTree
+        {
+            get; set;
+        }
+    }
 }

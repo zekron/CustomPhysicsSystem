@@ -2,370 +2,368 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace J2P
+namespace CustomPhysics2D
 {
-	public class JPhysicsManager : MonoBehaviour
-	{
-		public static bool useUnityRayCast = true;
+    public class JPhysicsManager : MonoBehaviour
+    {
+        private static JPhysicsManager _instance = null;
+        public static bool useUnityRayCast = true;
 
-		public static JPhysicsManager instance
-		{
-			get
-			{
-				if( _instance == null && Application.isPlaying )
-				{
-					var obj = new GameObject( "Physics Manager" );
-					_instance = obj.AddComponent<JPhysicsManager>();
+        public static JPhysicsManager instance
+        {
+            get
+            {
+                if (_instance == null && Application.isPlaying)
+                {
+                    _instance = FindObjectOfType<JPhysicsManager>();
 
-					//DontDestroyOnLoad( obj );
-				}
-				return _instance;
-			}
-		}
+                    //DontDestroyOnLoad( obj );
+                }
+                return _instance;
+            }
+        }
 
-		public static bool DestroyInstance()
-		{
-			if( _instance == null )
-			{
-				return false;
-			}
+        public static bool DestroyInstance()
+        {
+            if (_instance == null)
+            {
+                return false;
+            }
 
-			Destroy( _instance.gameObject );
-			_instance = null;
+            Destroy(_instance.gameObject);
+            _instance = null;
 
-			return true;
-		}
+            return true;
+        }
 
-		private static JPhysicsManager _instance = null;
+        private WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
+        private QuadTree _quadTree;
 
-		private HashSet<CollisionInfo> _lastFrameHitColliders = new HashSet<CollisionInfo>();
+        #region Datas
+        private HashSet<CollisionInfo> _lastFrameHitColliders = new HashSet<CollisionInfo>();
+        private HashSet<CollisionInfo> _lastFrameHitRigidbodies = new HashSet<CollisionInfo>();
+        private HashSet<CollisionInfo> _currentFrameHitColliders = new HashSet<CollisionInfo>();
+        private HashSet<CollisionInfo> _currentFrameHitRigidbodies = new HashSet<CollisionInfo>();
+        private HashSet<CollisionInfo> _toBeRemovedCollisions = new HashSet<CollisionInfo>();
+        private Dictionary<Collider2D, JRigidbody> _rigidbodies = new Dictionary<Collider2D, JRigidbody>();
+        private Dictionary<Collider2D, JPlatform> _platforms = new Dictionary<Collider2D, JPlatform>();
+        #endregion
 
-		private HashSet<CollisionInfo> _lastFrameHitRigidbodies = new HashSet<CollisionInfo>();
+        public QuadTree quadTree
+        {
+            get
+            {
+                return _quadTree;
+            }
+        }
 
-		private HashSet<CollisionInfo> _currentFrameHitColliders = new HashSet<CollisionInfo>();
+        public JPhysicsSetting setting
+        {
+            get; private set;
+        }
 
-		private HashSet<CollisionInfo> _currentFrameHitRigidbodies = new HashSet<CollisionInfo>();
+        private void Awake()
+        {
+            this.setting = Instantiate(Resources.Load<JPhysicsSetting>("JPhysics Settings"));
+            this.StartCoroutine(UpdateCollisions());
 
-		private HashSet<CollisionInfo> _toBeRemovedCollisions = new HashSet<CollisionInfo>();
+            useUnityRayCast = false;
+        }
 
-		private Dictionary<Collider2D, JRigidbody> _rigidbodies = new Dictionary<Collider2D, JRigidbody>();
+        private void Start()
+        {
+            if (useUnityRayCast == false)
+            {
+                foreach (JRigidbody rigidbody in _rigidbodies.Values)
+                {
+                    rigidbody.InitializePosInQuadTree(_quadTree);
+                    _quadTree.UpdateItem(rigidbody);
+                }
+                foreach (JPlatform platform in _platforms.Values)
+                {
+                    platform.InitializePosInQuadTree(_quadTree);
+                    _quadTree.UpdateItem(platform);
+                }
+            }
+        }
 
-		private Dictionary<Collider2D, JPlatform> _platforms = new Dictionary<Collider2D, JPlatform>();
+        public void CreateQuadTree(Rect worldRect, int maxDepth)
+        {
+            _quadTree = new QuadTree(worldRect, maxDepth);
+        }
 
-		private WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
+        private void FixedUpdate()
+        {
+            // Rigidbodies
+            foreach (var pair in _rigidbodies)
+            {
+                var rigidbody = pair.Value;
+                if (!rigidbody.isActiveAndEnabled || !rigidbody.gameObject.activeInHierarchy)
+                {
+                    continue;
+                }
 
-		private QuadTree _quadTree;
+                rigidbody.Simulate(Time.fixedDeltaTime);
+                if (useUnityRayCast == false)
+                {
+                    _quadTree.UpdateItem(rigidbody);
+                }
+            }
+        }
 
-		public QuadTree quadTree
-		{
-			get
-			{
-				return _quadTree;
-			}
-		}
+        private void OnDestroy()
+        {
+            this.StopCoroutine(UpdateCollisions());
+        }
 
-		public JPhysicsSetting setting { get; private set; }
+        public void PushCollision(CollisionInfo collisionInfo)
+        {
+            if (this.GetRigidbody(collisionInfo.collider) != null && this.GetRigidbody(collisionInfo.hitCollider) != null)
+            {
+                if (!_currentFrameHitRigidbodies.Contains(collisionInfo))
+                {
+                    _currentFrameHitRigidbodies.Add(collisionInfo);
+                }
+            }
+            else
+            {
+                _currentFrameHitColliders.Add(collisionInfo);
+            }
+        }
 
-		private void Awake()
-		{
-			this.setting = Instantiate( Resources.Load<JPhysicsSetting>( "JPhysics Settings" ) );
-			this.StartCoroutine( UpdateCollisions() );
-		}
+        private IEnumerator UpdateCollisions()
+        {
+            while (true)
+            {
+                yield return _waitForFixedUpdate;
 
-		private void Start()
-		{
-			if( useUnityRayCast == false )
-			{
-				foreach( JRigidbody rigidbody in _rigidbodies.Values )
-				{
-					rigidbody.InitializePosInQuadTree( _quadTree );
-					_quadTree.UpdateItem( rigidbody );
-				}
-				foreach( JPlatform platform in _platforms.Values )
-				{
-					platform.InitializePosInQuadTree( _quadTree );
-					_quadTree.UpdateItem( platform );
-				}
-			}
-		}
+                this.HandleCollidersEnter();
 
-		public void CreateQuadTree( Rect worldRect, int maxDepth )
-		{
-			_quadTree = new QuadTree( worldRect, maxDepth );
-		}
+                this.HandleCollidersExit();
 
-		private void FixedUpdate()
-		{
-			// Rigidbod
-			foreach( var pair in _rigidbodies )
-			{
-				var rigidbody = pair.Value;
-				if( !rigidbody.isActiveAndEnabled || !rigidbody.gameObject.activeInHierarchy )
-				{
-					continue;
-				}
+                _currentFrameHitColliders.Clear();
+                _currentFrameHitRigidbodies.Clear();
+            }
+        }
 
-				rigidbody.Simulate( Time.fixedDeltaTime );
-				if( useUnityRayCast == false )
-				{
-					_quadTree.UpdateItem( rigidbody );
-				}
-			}
-		}
+        private void HandleCollidersEnter()
+        {
+            // New Collisions This Frame
+            foreach (var currentFrameCollision in _currentFrameHitColliders)
+            {
+                if (!_lastFrameHitColliders.Contains(currentFrameCollision))
+                {
+                    this.ContactEvent(currentFrameCollision, true);
+                    _lastFrameHitColliders.Add(currentFrameCollision);
+                }
+            }
 
-		private void OnDestroy()
-		{
-			this.StopCoroutine( UpdateCollisions() );
-		}
+            // New Rigidbody Collisions This Frame
+            foreach (var collision in _currentFrameHitRigidbodies)
+            {
+                if (!_lastFrameHitRigidbodies.Contains(collision))
+                {
+                    this.ContactEvent(collision, true);
+                    _lastFrameHitRigidbodies.Add(collision);
+                }
+            }
+        }
 
-		public void PushCollision( CollisionInfo collisionInfo )
-		{
-			if( this.GetRigidbody( collisionInfo.collider ) != null && this.GetRigidbody( collisionInfo.hitCollider ) != null )
-			{
-				if( !_currentFrameHitRigidbodies.Contains( collisionInfo ) )
-				{
-					_currentFrameHitRigidbodies.Add( collisionInfo );
-				}
-			}
-			else
-			{
-				_currentFrameHitColliders.Add( collisionInfo );
-			}
-		}
+        private void HandleCollidersExit()
+        {
+            foreach (var lastFrameCollision in _lastFrameHitColliders)
+            {
+                if (!_currentFrameHitColliders.Contains(lastFrameCollision) || lastFrameCollision.collider == null || lastFrameCollision.hitCollider == null)
+                {
+                    this.ContactEvent(lastFrameCollision, false);
+                    _toBeRemovedCollisions.Add(lastFrameCollision);
+                }
+            }
 
-		private IEnumerator UpdateCollisions()
-		{
-			while( true )
-			{
-				yield return _waitForFixedUpdate;
+            foreach (var collision in _toBeRemovedCollisions)
+            {
+                _lastFrameHitColliders.Remove(collision);
+            }
 
-				this.HandleCollidersEnter();
+            _toBeRemovedCollisions.Clear();
+            foreach (var collision in _lastFrameHitRigidbodies)
+            {
+                if (!_currentFrameHitRigidbodies.Contains(collision) || collision.collider == null || collision.hitCollider == null)
+                {
+                    this.ContactEvent(collision, false);
+                    _toBeRemovedCollisions.Add(collision);
+                }
+            }
 
-				this.HandleCollidersExit();
+            foreach (var collision in _toBeRemovedCollisions)
+            {
+                _lastFrameHitRigidbodies.Remove(collision);
+            }
 
-				_currentFrameHitColliders.Clear();
-				_currentFrameHitRigidbodies.Clear();
-			}
-		}
+            _toBeRemovedCollisions.Clear();
+        }
 
-		private void HandleCollidersEnter()
-		{
-			// New Collisions This Frame
-			foreach( var currentFrameCollision in _currentFrameHitColliders )
-			{
-				if( !_lastFrameHitColliders.Contains( currentFrameCollision ) )
-				{
-					this.ContactEvent( currentFrameCollision, true );
-					_lastFrameHitColliders.Add( currentFrameCollision );
-				}
-			}
+        private void ContactEvent(CollisionInfo collisionInfo, bool isBeginEvent)
+        {
+            if (collisionInfo.hitCollider == null || collisionInfo.collider == null)
+            {
+                return;
+            }
 
-			// New Rigidbody Collisions This Frame
-			foreach( var collision in _currentFrameHitRigidbodies )
-			{
-				if( !_lastFrameHitRigidbodies.Contains( collision ) )
-				{
-					this.ContactEvent( collision, true );
-					_lastFrameHitRigidbodies.Add( collision );
-				}
-			}
-		}
+            if (collisionInfo.collider.isTrigger || collisionInfo.hitCollider.isTrigger)
+            {
+                // Trigger Event
+                this.SendCollisionMessage(collisionInfo, isBeginEvent, true);
+            }
+            else
+            {
+                // Collison Event
+                this.SendCollisionMessage(collisionInfo, isBeginEvent, false);
+            }
+        }
 
-		private void HandleCollidersExit()
-		{
-			foreach( var lastFrameCollision in _lastFrameHitColliders )
-			{
-				if( !_currentFrameHitColliders.Contains( lastFrameCollision ) || lastFrameCollision.collider == null || lastFrameCollision.hitCollider == null )
-				{
-					this.ContactEvent( lastFrameCollision, false );
-					_toBeRemovedCollisions.Add( lastFrameCollision );
-				}
-			}
+        private void SendCollisionMessage(CollisionInfo collisionInfo, bool isBeginEvent, bool isTriggerEvent)
+        {
+            var rigidbody = GetRigidbody(collisionInfo.collider);
+            var hitCollider = collisionInfo.hitCollider;
+            var hitRigidbody = this.GetRigidbody(collisionInfo.hitCollider);
 
-			foreach( var collision in _toBeRemovedCollisions )
-			{
-				_lastFrameHitColliders.Remove( collision );
-			}
+            if (isBeginEvent)
+            {
+                if (rigidbody != null)
+                {
+                    if (isTriggerEvent)
+                    {
+                        rigidbody.onTriggerEnter?.Invoke(collisionInfo);
+                    }
+                    else
+                    {
+                        rigidbody.onCollisionEnter?.Invoke(collisionInfo);
+                    }
+                }
 
-			_toBeRemovedCollisions.Clear();
-			foreach( var collision in _lastFrameHitRigidbodies )
-			{
-				if( !_currentFrameHitRigidbodies.Contains( collision ) || collision.collider == null || collision.hitCollider == null )
-				{
-					this.ContactEvent( collision, false );
-					_toBeRemovedCollisions.Add( collision );
-				}
-			}
+                // Switch collider & hitCollider
+                if (hitRigidbody != null)
+                {
+                    collisionInfo.hitCollider = collisionInfo.collider;
+                    collisionInfo.collider = hitCollider;
 
-			foreach( var collision in _toBeRemovedCollisions )
-			{
-				_lastFrameHitRigidbodies.Remove( collision );
-			}
+                    if (isTriggerEvent)
+                    {
+                        hitRigidbody.onTriggerEnter?.Invoke(collisionInfo);
+                    }
+                    else
+                    {
+                        hitRigidbody.onCollisionEnter?.Invoke(collisionInfo);
+                    }
+                }
+                else
+                {
+                    //collisionInfo.hitCollider.gameObject.SendMessage( isTriggerEvent ? _triggerBeginEventName : _collisionBeginEventName,
+                    //	collisionInfo, SendMessageOptions.DontRequireReceiver );
+                }
+            }
+            else
+            {
+                if (rigidbody != null)
+                {
+                    if (isTriggerEvent)
+                    {
+                        rigidbody.onTriggerExit?.Invoke(collisionInfo);
+                    }
+                    else
+                    {
+                        rigidbody.onCollisionExit?.Invoke(collisionInfo);
+                    }
+                }
 
-			_toBeRemovedCollisions.Clear();
-		}
+                // Switch collider & hitCollider
+                if (hitRigidbody != null)
+                {
+                    if (isTriggerEvent)
+                    {
+                        hitRigidbody.onTriggerExit?.Invoke(collisionInfo);
+                    }
+                    else
+                    {
+                        hitRigidbody.onCollisionExit?.Invoke(collisionInfo);
+                    }
+                }
+                else
+                {
+                    //collisionInfo.hitCollider.gameObject.SendMessage( isTriggerEvent ? _triggerEndEventName : _collisionEndEventName,
+                    //	collisionInfo, SendMessageOptions.DontRequireReceiver );
+                }
+            }
+        }
 
-		private void ContactEvent( CollisionInfo collisionInfo, bool isBeginEvent )
-		{
-			if( collisionInfo.hitCollider == null || collisionInfo.collider == null )
-			{
-				return;
-			}
+        public void PushRigidbody(JRigidbody rigidbody)
+        {
+            if (rigidbody == null)
+            {
+                return;
+            }
 
-			if( collisionInfo.collider.isTrigger || collisionInfo.hitCollider.isTrigger )
-			{
-				// Trigger Event
-				this.SendCollisionMessage( collisionInfo, isBeginEvent, true );
-			}
-			else
-			{
-				// Collison Event
-				this.SendCollisionMessage( collisionInfo, isBeginEvent, false );
-			}
-		}
+            if (!_rigidbodies.ContainsKey(rigidbody.SelfCollider))
+            {
+                _rigidbodies.Add(rigidbody.SelfCollider, rigidbody);
+            }
+            else
+            {
+                throw new System.ArgumentException("The rigidbody has already existed", "rigidbody");
+            }
+        }
 
-		private void SendCollisionMessage( CollisionInfo collisionInfo, bool isBeginEvent, bool isTriggerEvent )
-		{
-			var rigidbody = GetRigidbody( collisionInfo.collider );
-			var hitCollider = collisionInfo.hitCollider;
-			var hitRigidbody = this.GetRigidbody( collisionInfo.hitCollider );
+        public void RemoveRigidbody(JRigidbody rigidbody)
+        {
+            if (rigidbody == null)
+            {
+                return;
+            }
 
-			if( isBeginEvent )
-			{
-				if( rigidbody != null )
-				{
-					if( isTriggerEvent )
-					{
-						rigidbody.onTriggerEnter?.Invoke( collisionInfo );
-					}
-					else
-					{
-						rigidbody.onCollisionEnter?.Invoke( collisionInfo );
-					}
-				}
+            if (_rigidbodies == null || _rigidbodies.Count == 0)
+            {
+                return;
+            }
 
-				// Switch collider & hitCollider
-				if( hitRigidbody != null )
-				{
-					collisionInfo.hitCollider = collisionInfo.collider;
-					collisionInfo.collider = hitCollider;
+            _rigidbodies.Remove(rigidbody.SelfCollider);
+        }
 
-					if( isTriggerEvent )
-					{
-						hitRigidbody.onTriggerEnter?.Invoke( collisionInfo );
-					}
-					else
-					{
-						hitRigidbody.onCollisionEnter?.Invoke( collisionInfo );
-					}
-				}
-				else
-				{
-					//collisionInfo.hitCollider.gameObject.SendMessage( isTriggerEvent ? _triggerBeginEventName : _collisionBeginEventName,
-					//	collisionInfo, SendMessageOptions.DontRequireReceiver );
-				}
-			}
-			else
-			{
-				if( rigidbody != null )
-				{
-					if( isTriggerEvent )
-					{
-						rigidbody.onTriggerExit?.Invoke( collisionInfo );
-					}
-					else
-					{
-						rigidbody.onCollisionExit?.Invoke( collisionInfo );
-					}
-				}
+        public JRigidbody GetRigidbody(Collider2D collider)
+        {
+            if (collider == null)
+            {
+                return null;
+            }
 
-				// Switch collider & hitCollider
-				if( hitRigidbody!= null )
-				{
-					if( isTriggerEvent )
-					{
-						hitRigidbody.onTriggerExit?.Invoke( collisionInfo );
-					}
-					else
-					{
-						hitRigidbody.onCollisionExit?.Invoke( collisionInfo );
-					}
-				}
-				else
-				{
-					//collisionInfo.hitCollider.gameObject.SendMessage( isTriggerEvent ? _triggerEndEventName : _collisionEndEventName,
-					//	collisionInfo, SendMessageOptions.DontRequireReceiver );
-				}
-			}
-		}
+            JRigidbody rigidbody = null;
+            _rigidbodies.TryGetValue(collider, out rigidbody);
+            return rigidbody;
+        }
 
-		public void PushRigidbody( JRigidbody rigidbody )
-		{
-			if( rigidbody == null )
-			{
-				return;
-			}
+        public void PushPlatform(JPlatform platform)
+        {
+            if (platform == null)
+            {
+                return;
+            }
+            if (!_platforms.ContainsKey(platform.SelfCollider))
+            {
+                _platforms.Add(platform.SelfCollider, platform);
+            }
+        }
 
-			if( !_rigidbodies.ContainsKey( rigidbody.selfCollider ) )
-			{
-				_rigidbodies.Add( rigidbody.selfCollider, rigidbody );
-			}
-			else
-			{
-				throw new System.ArgumentException( "The rigidbody has already existed", "rigidbody" );
-			}
-		}
-
-		public void RemoveRigidbody( JRigidbody rigidbody )
-		{
-			if( rigidbody == null )
-			{
-				return;
-			}
-
-			if( _rigidbodies == null || _rigidbodies.Count == 0 )
-			{
-				return;
-			}
-
-			_rigidbodies.Remove( rigidbody.selfCollider );
-		}
-
-		public JRigidbody GetRigidbody( Collider2D collider )
-		{
-			if( collider == null )
-			{
-				return null;
-			}
-
-			JRigidbody rigidbody = null;
-			_rigidbodies.TryGetValue( collider, out rigidbody );
-			return rigidbody;
-		}
-
-		public void PushPlatform( JPlatform platform )
-		{
-			if( platform == null )
-			{
-				return;
-			}
-			if( !_platforms.ContainsKey( platform.selfCollider ) )
-			{
-				_platforms.Add( platform.selfCollider, platform );
-			}
-		}
-
-		public void RemovePlatform( JPlatform platform )
-		{
-			if( _platforms == null || _platforms.Count == 0 )
-			{
-				return;
-			}
-			if( platform == null )
-			{
-				return;
-			}
-			_platforms.Remove( platform.selfCollider );
-		}
-	}
+        public void RemovePlatform(JPlatform platform)
+        {
+            if (_platforms == null || _platforms.Count == 0)
+            {
+                return;
+            }
+            if (platform == null)
+            {
+                return;
+            }
+            _platforms.Remove(platform.SelfCollider);
+        }
+    }
 }

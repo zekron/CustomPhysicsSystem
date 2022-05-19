@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-namespace J2P
+namespace CustomPhysics2D
 {
 	public struct JRaycastHitList
 	{

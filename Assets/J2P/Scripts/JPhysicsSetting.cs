@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace J2P
+namespace CustomPhysics2D
 {
 	[System.Serializable]
 	public class CollisionLayerMask

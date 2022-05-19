@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace J2P
+namespace CustomPhysics2D
 {
 	public static class JPhysics
 	{
@@ -43,7 +43,7 @@ namespace J2P
 			var itemList = quadTree.GetItems( rayRect );
 			foreach( IQuadTreeItem item in itemList )
 			{
-				var collider = item.selfCollider;
+				var collider = item.SelfCollider;
 				var layer = collider.gameObject.layer;
 				if( !layMask.Contains( layer ) )
 				{

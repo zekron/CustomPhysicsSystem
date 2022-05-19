@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-namespace J2P
+namespace CustomPhysics2D
 {
 	public static class Extension 
 	{

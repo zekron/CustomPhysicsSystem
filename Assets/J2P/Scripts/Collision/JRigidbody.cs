@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
 
-namespace J2P
+namespace CustomPhysics2D
 {
 	public class JRigidbody : JCollisionController
 	{
@@ -90,7 +90,7 @@ namespace J2P
 			this.collisionMask = _physicsManager.setting.GetCollisionMask( this.gameObject.layer );
 
 			// Add myself's collider to ignoredColliders list
-			_ignoredColliders.Add( this.selfCollider );
+			_ignoredColliders.Add( this.SelfCollider );
 		}
 
 		private void OnDestroy()
@@ -115,7 +115,7 @@ namespace J2P
 			// Reset Collision Info Before Collision
 			this.ResetStatesBeforeCollision();
 
-			if( this.selfCollider == null || !this.selfCollider.enabled )
+			if( this.SelfCollider == null || !this.SelfCollider.enabled )
 			{
 				return;
 			}
@@ -140,7 +140,7 @@ namespace J2P
 
 		private void ResetStatesBeforeCollision()
 		{
-			_colliderIsTrigger = this.selfCollider.isTrigger;
+			_colliderIsTrigger = this.SelfCollider.isTrigger;
 			_collisionInfo.Reset();
 			_triggerInfo.Reset();
 			_raycastOrigins.Reset();
@@ -179,7 +179,7 @@ namespace J2P
 
 		public void Move()
 		{
-			if( this.selfCollider == null || !this.selfCollider.enabled )
+			if( this.SelfCollider == null || !this.SelfCollider.enabled )
 			{
 				return;
 			}
@@ -303,7 +303,7 @@ namespace J2P
 			}
 
 			// Collision Info
-			_collisionInfo.collider = this.selfCollider;
+			_collisionInfo.collider = this.SelfCollider;
 			_collisionInfo.hitCollider = hitCollider;
 			_collisionInfo.position = hitPoint;
 
@@ -410,7 +410,7 @@ namespace J2P
 			}
 
 			// Collision Info
-			_collisionInfo.collider = this.selfCollider;
+			_collisionInfo.collider = this.SelfCollider;
 			_collisionInfo.hitCollider = hitCollider;
 			_collisionInfo.position = hitPoint;
 
@@ -446,7 +446,7 @@ namespace J2P
 			// Trigger?
 			if( hitCollider.isTrigger || _colliderIsTrigger )
 			{
-				_triggerInfo.collider = this.selfCollider;
+				_triggerInfo.collider = this.SelfCollider;
 				_triggerInfo.hitCollider = hitCollider;
 				_triggerInfo.position.x = point.x;
 				_triggerInfo.position.y = point.y;

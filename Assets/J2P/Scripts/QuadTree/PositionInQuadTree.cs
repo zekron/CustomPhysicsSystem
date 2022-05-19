@@ -1,114 +1,81 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections;
 using System.Text;
-using System;
 
-namespace J2P
+namespace CustomPhysics2D
 {
-	/// <summary>
-	/// Represents a position in a quadtree
-	/// </summary>
-	public struct PositionInQuadTree: IEquatable<PositionInQuadTree>
-	{
-		public PositionInQuadTreeDepth[] posInDepths;
+    /// <summary>
+    /// Represents a position in a quad tree
+    /// </summary>
+    public struct PositionInQuadTree : IEquatable<PositionInQuadTree>
+    {
+        public PositionInQuadTreeDepth[] posInDepths;
+        public bool inRoot
+        {
+            get; private set;
+        }
+        public int storeDepth;
 
-		public bool inRoot;
+        public PositionInQuadTree(int maxDepth)
+        {
+            inRoot = maxDepth == 0;
+            if (!inRoot)
+            {
+                posInDepths = new PositionInQuadTreeDepth[maxDepth];
+                for (int i = 0; i < posInDepths.Length; i++)
+                {
+                    posInDepths[i].rowIndex = -1;
+                    posInDepths[i].columnIndex = -1;
+                }
+            }
+            else posInDepths = null;
+            storeDepth = 0;
+        }
 
-		public int storeDepth;
+        public void CopyTo(PositionInQuadTree other)
+        {
+            other.storeDepth = storeDepth;
+            other.inRoot = inRoot;
+            posInDepths.CopyTo(other.posInDepths, 0);
+        }
 
-		public PositionInQuadTree( int maxDepth )
-		{
-			posInDepths = new PositionInQuadTreeDepth[maxDepth];
-			for( int i = 0; i < posInDepths.Length; i++ )
-			{
-				posInDepths[i].rowIndex = -1;
-				posInDepths[i].columnIndex = -1;
-			}
-			inRoot = false;
-			storeDepth = 0;
-		}
+        public void Reset()
+        {
+            if (inRoot) return;
 
-		public void Copy( PositionInQuadTree other )
-		{
-			this.storeDepth = other.storeDepth;
-			this.inRoot = other.inRoot;
-			for( int i = 0; i < other.storeDepth; i++ )
-			{
-				this.posInDepths[i].rowIndex = other.posInDepths[i].rowIndex;
-				this.posInDepths[i].columnIndex = other.posInDepths[i].columnIndex;
-			}
-		}
+            inRoot = false;
+            for (int i = 0; i < posInDepths.Length; i++)
+            {
+                posInDepths[i].rowIndex = -1;
+                posInDepths[i].columnIndex = -1;
+            }
+            storeDepth = 0;
+        }
 
-		public void Reset()
-		{
-			inRoot = false;
-			for( int i = 0; i < posInDepths.Length; i++ )
-			{
-				posInDepths[i].rowIndex = -1;
-				posInDepths[i].columnIndex = -1;
-			}
-			storeDepth = 0;
-		}
+        public override string ToString()
+        {
+            if (posInDepths == null) return inRoot ? "In Root" : string.Empty;
 
-		public override string ToString()
-		{
-			if( posInDepths == null )
-			{
-				if( inRoot )
-				{
-					return "In Root";
-				}
-				else
-				{
-					return string.Empty;
-				}
-			}
-			var sb = new StringBuilder();
-			for( int i = 0; i < posInDepths.Length; i++ )
-			{
-				if( posInDepths[i].rowIndex != -1 )
-				{
-					sb.AppendLine( string.Format( "Depth:{0} index:{1},{2}", i, posInDepths[i].rowIndex, posInDepths[i].columnIndex ) );
-				}
-			}
-			return sb.ToString();
-		}
+            var sb = new StringBuilder();
+            for (int i = 0; i < posInDepths.Length; i++)
+            {
+                if (posInDepths[i].rowIndex != -1)
+                {
+                    sb.AppendLine(string.Format("Depth:\t{0},\tposition:\t{1}", i, posInDepths[i]));
+                }
+            }
+            return sb.ToString();
+        }
 
-		public bool Equals( PositionInQuadTree other )
-		{
-			if( this.inRoot != other.inRoot )
-			{
-				return false;
-			}
-			if( other.posInDepths.Length == this.posInDepths.Length )
-			{
-				for( int i = 0; i < posInDepths.Length; i++ )
-				{
-					if( posInDepths[i].rowIndex != other.posInDepths[i].rowIndex )
-					{
-						return false;
-					}
-					if( posInDepths[i].columnIndex != other.posInDepths[i].columnIndex )
-					{
-						return false;
-					}
-				}
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-	}
+        public bool Equals(PositionInQuadTree other)
+        {
+            if (inRoot ^ other.inRoot) return false;
 
-	/// <summary>
-	/// Represents a position in a quadtree's depth
-	/// </summary>
-	public struct PositionInQuadTreeDepth
-	{
-		public int rowIndex;
+            if (inRoot) return true;
 
-		public int columnIndex;
-	}
+            if (other.posInDepths.Length != posInDepths.Length) return false;
+
+            return ((IStructuralEquatable)posInDepths).Equals(other.posInDepths, StructuralComparisons.StructuralEqualityComparer);
+        }
+    }
 }

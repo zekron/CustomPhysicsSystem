@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace J2P.Test
+namespace CustomPhysics2D.Test
 {
 	public class TestPhysics
 	{

@@ -1,83 +1,82 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace J2P
+namespace CustomPhysics2D
 {
-	public class QuadTree
-	{
-		private Rect _worldRect;
+    public class QuadTree
+    {
+        private Rect _worldRect;
+        private int _maxDepth;
+        /// <summary>
+        /// Store the grid size for each depth, index is depth
+        /// </summary>
+        private Vector2[] _gridSizes;
+        private QuadTreeNode _root;
 
-		private int _maxDepth;
+        private List<IQuadTreeItem> _cacheItemsFound = new List<IQuadTreeItem>();
+        private Queue<QuadTreeNode> _traverseNodeQueue = new Queue<QuadTreeNode>();
 
-		//Store the grid size for each depth，index is depth
-		private Vector2[] _gridSizes;
+        public bool NeedDebug
+        {
+            get; set;
+        }
 
-		private QuadTreeNode _root;
+        public int MaxDepth => _maxDepth;
 
-		private List<IQuadTreeItem> _cacheItemsFound = new List<IQuadTreeItem>();
+        public Rect WorldRect => _worldRect;
 
-		private Queue<QuadTreeNode> _traverseNodeQueue = new Queue<QuadTreeNode>();
+        //Support rectangle range
+        public QuadTree(Rect worldRect, int maxDepth)
+        {
+            this.NeedDebug = false;
+            _worldRect = worldRect;
+            _maxDepth = maxDepth;
+            _gridSizes = new Vector2[maxDepth + 1];
+            for (int i = 0; i <= maxDepth; i++)
+            {
+                var width = worldRect.width / (Mathf.Pow(2, i));
+                var height = worldRect.height / (Mathf.Pow(2, i));
+                _gridSizes[i] = new Vector2(width, height);
+            }
+            _root = new QuadTreeNode(_worldRect, 0, maxDepth);
+        }
 
-		public bool debug { get; set; }
+        public static QuadTree Create(Rect worldRect, int maxDepth)
+        {
+            return new QuadTree(worldRect, maxDepth);
+        }
+        public int GetDepth(Vector2 size)
+        {
+            for (int i = _gridSizes.Length - 1; i >= 0; i--)
+            {
+                if (size.x <= _gridSizes[i].x && size.y <= _gridSizes[i].y)
+                {
+                    return i;
+                }
+            }
 
-		public int maxDepth
-		{
-			get
-			{
-				return _maxDepth;
-			}
-		}
+            Debug.LogError("Size is bigger than QuadTree Max Range");
+            return -1;
+        }
 
-		public Rect worldRect
-		{
-			get { return _worldRect; }
-		}
+        /// <summary>
+        /// <para>根据物体的 <paramref name="center"/> 和 <paramref name="size"/> 更新 <paramref name="posInfo"/></para>
+        /// <para>Refresh <paramref name="posInfo"/> based on <paramref name="center"/> and <paramref name="size"/></para>
+        /// </summary>
+        /// <param name="center">物体的中心坐标</param>
+        /// <param name="size">物体的大小(Rect.width, Rect.height)</param>
+        /// <param name="posInfo">需要更新的位置信息</param>
+        public void GetPosInfo(Vector2 center, Vector2 size, ref PositionInQuadTree posInfo)
+        {
+            posInfo.Reset();
 
-		//Support rectangle range
-		public QuadTree( Rect worldRect, int maxDepth )
-		{
-			this.debug = false;
-			_worldRect = worldRect;
-			_maxDepth = maxDepth;
-			_gridSizes = new Vector2[maxDepth + 1];
-			for( int i = 0; i <= maxDepth; i++ )
-			{
-				var width = worldRect.width / ( Mathf.Pow( 2, i ) );
-				var height = worldRect.height / ( Mathf.Pow( 2, i ) );
-				_gridSizes[i] = new Vector2( width, height );
-			}
-			_root = new QuadTreeNode( _worldRect, 0, maxDepth );
-		}
+            var depth = GetDepth(size);
+            if (depth == 0) return;
 
-		public int GetDepth( Vector2 size )
-		{
-			for( int i = _gridSizes.Length - 1; i >= 0; i-- )
-			{
-				if( size.x <= _gridSizes[i].x && size.y <= _gridSizes[i].y )
-				{
-					return i;
-				}
-			}
+            var gridsize = _gridSizes[depth];
 
-			Debug.LogError( "Size is bigger than QuadTree Max Range" );
-			return -1;
-		}
-
-		public void GetPosInfo( Vector2 size, Vector2 center, ref PositionInQuadTree posInfo )
-		{
-			posInfo.Reset();
-
-			var depth = GetDepth( size );
-			if( depth == 0 )
-			{
-				posInfo.inRoot = true;
-				return;
-			}
-			var gridsize = _gridSizes[depth];
-
-			int row = Mathf.FloorToInt( ( center.y - _worldRect.yMin ) / gridsize.y );
-			int column = Mathf.FloorToInt( ( center.x - _worldRect.xMin ) / gridsize.x );
+            int row = Mathf.FloorToInt((center.y - _worldRect.yMin) / gridsize.y);
+            int column = Mathf.FloorToInt((center.x - _worldRect.xMin) / gridsize.x);
 
             var storeDepth = posInfo.storeDepth = depth;
 
@@ -87,101 +86,75 @@ namespace J2P
                 posInfo.posInDepths[storeDepth].rowIndex = (row >> i) & 1;
                 posInfo.posInDepths[storeDepth].columnIndex = (column >> i) & 1;
             }
-		}
+        }
 
-		public void UpdateItem( IQuadTreeItem item )
-		{
-			var newPosInfo = item.currentPosInQuadTree;
-			GetPosInfo( item.size, item.center, ref newPosInfo );
-			if( newPosInfo.Equals( item.lastPosInQuadTree ) )
-			{
-				return;
-			}
-			var currentParent = _root;
-			if( item.lastPosInQuadTree.posInDepths != null )
-			{
-				for( int i = 0; i < item.lastPosInQuadTree.storeDepth; i++ )
-				{
-					var currentDepthPosInfo = item.lastPosInQuadTree.posInDepths[i];
-					currentParent.totalItemsCount -= 1;
-					if( i == item.lastPosInQuadTree.storeDepth - 1 )
-					{
-						currentParent.childNodes[currentDepthPosInfo.rowIndex, currentDepthPosInfo.columnIndex].RemoveItem( item );
-					}
-					else
-					{
-						currentParent = currentParent.childNodes[currentDepthPosInfo.rowIndex, currentDepthPosInfo.columnIndex];
-					}
-				}
-			}
-			if( this.debug )
-			{
-				Debug.Log( "Remove item in:" + item.lastPosInQuadTree );
-				Debug.Log( "Add item in:" + newPosInfo );
-			}
+        public void UpdateItem(IQuadTreeItem item)
+        {
+            var newPosInfo = item.CurrentPosInQuadTree;
+            GetPosInfo(item.Center, item.Size, ref newPosInfo);
+            if (newPosInfo.Equals(item.LastPosInQuadTree)) return;
 
-			//item.currentPosInQuadTree.Copy( newPosInfo );
-			var lastPos = item.lastPosInQuadTree;
-			lastPos.Copy( newPosInfo );
-			item.lastPosInQuadTree = lastPos;
+            var lastPosInfo = item.LastPosInQuadTree;
+            if (lastPosInfo.posInDepths != null)
+            {
+                //从上一帧位置信息中移除当前物体
+                _root.RemoveItemInChildren(item, lastPosInfo, lastPosInfo.storeDepth - 1);
+            }
+            if (this.NeedDebug)
+            {
+                Debug.LogFormat("Remove item in:\n{0}", lastPosInfo);
+                Debug.LogFormat("Add item in:\n{0}", newPosInfo);
+            }
 
-			currentParent = _root;
-			if( item.lastPosInQuadTree.inRoot )
-			{
-				_root.AddItem( item );
-				return;
-			}
-			for( int i = 0; i < newPosInfo.storeDepth; i++ )
-			{
-				var currentDepthPosInfo = newPosInfo.posInDepths[i];
-				currentParent.totalItemsCount += 1;
-				if( i == newPosInfo.storeDepth - 1 )
-				{
-					currentParent.childNodes[currentDepthPosInfo.rowIndex, currentDepthPosInfo.columnIndex].AddItem( item );
-				}
-				else
-				{
-					currentParent = currentParent.childNodes[currentDepthPosInfo.rowIndex, currentDepthPosInfo.columnIndex];
-				}
-			}
-		}
+            //item.currentPosInQuadTree.Copy( newPosInfo );
+            newPosInfo.CopyTo(lastPosInfo);
+            item.LastPosInQuadTree = lastPosInfo;
 
-		/// <summary>
-		/// Get items that might intersect with the rayRect
-		/// </summary>
-		public List<IQuadTreeItem> GetItems( Rect rayRect )
-		{
-			_cacheItemsFound.Clear();
-			_traverseNodeQueue.Clear();
-			AddNodeToTraverseList( _root, rayRect );
-			while( _traverseNodeQueue.Count > 0 )
-			{
-				var currentChild = _traverseNodeQueue.Dequeue();
-				foreach( IQuadTreeItem item in currentChild.items )
-				{
-					if( item.rect.Intersects( rayRect ) )
-					{
-						_cacheItemsFound.Add( item );
-					}
-				}
+            //更新物体的当前帧位置信息
+            if (item.LastPosInQuadTree.inRoot)
+            {
+                _root.AddItem(item);
+                return;
+            }
+            _root.AddItemToChildren(item, lastPosInfo, lastPosInfo.storeDepth - 1);
+        }
 
-				if( currentChild.isLeaf == false )
-				{
-					foreach( var node in currentChild.childNodes )
-					{
-						AddNodeToTraverseList( node, rayRect );
-					}
-				}
-			}
-			return _cacheItemsFound;
-		}
+        /// <summary>
+        /// Get items that might intersect with the rayRect
+        /// </summary>
+        public List<IQuadTreeItem> GetItems(Rect rayRect)
+        {
+            _cacheItemsFound.Clear();
+            _traverseNodeQueue.Clear();
+            AddNodeToTraverseQueue(_root, rayRect);
+            while (_traverseNodeQueue.Count > 0)
+            {
+                var currentChild = _traverseNodeQueue.Dequeue();
+                foreach (IQuadTreeItem item in currentChild.Items)
+                {
+                    if (item.ItemRect.Intersects(rayRect))
+                    {
+                        _cacheItemsFound.Add(item);
+                    }
+                }
 
-		private void AddNodeToTraverseList( QuadTreeNode node, Rect rayRect )
-		{
-			if( node.totalItemsCount > 0 && node.looseRect.Intersects( rayRect ) )
-			{
-				_traverseNodeQueue.Enqueue( node );
-			}
-		}
-	}
+                if (currentChild.IsLeaf == false)
+                {
+                    foreach (var node in currentChild.ChildNodes)
+                    {
+                        AddNodeToTraverseQueue(node, rayRect);
+                    }
+                }
+            }
+            return _cacheItemsFound;
+        }
+
+        private void AddNodeToTraverseQueue(QuadTreeNode node, Rect rayRect)
+        {
+            if (node.TotalItemsCount > 0 && node.NodeLooseRect.Intersects(rayRect))
+            {
+                _traverseNodeQueue.Enqueue(node);
+            }
+        }
+    }
 }

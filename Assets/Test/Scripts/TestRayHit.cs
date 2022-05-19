@@ -1,10 +1,10 @@
-﻿using J2P;
+﻿using CustomPhysics2D;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace J2P.Test
+namespace CustomPhysics2D.Test
 {
 	public class TestRayHit : MonoBehaviour
 	{

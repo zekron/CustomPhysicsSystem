@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEditor;
 
-namespace J2P.Test
+namespace CustomPhysics2D.Test
 {
 	public class TestQuadTreeGenerator : MonoBehaviour
 	{
@@ -13,12 +13,12 @@ namespace J2P.Test
 		public int maxDepth;
 
 		// Use this for initialization
-		void Start()
+		void Awake()
 		{
 			var rectPos = this.transform.position - new Vector3( width / 2, height / 2 );
 			var worldRect = new Rect( rectPos, new Vector2( width, height ) );
 			JPhysicsManager.instance.CreateQuadTree( worldRect, maxDepth );
-			JPhysicsManager.instance.quadTree.debug = true;
+			JPhysicsManager.instance.quadTree.NeedDebug = true;
 			JPhysicsManager.useUnityRayCast = false;
 		}
 

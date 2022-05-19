@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditorInternal;
 
-namespace J2P
+namespace CustomPhysics2D
 {
 	[CustomEditor(typeof (JPhysicsSetting))]
     public class JPhysicsSettingInspector : Editor

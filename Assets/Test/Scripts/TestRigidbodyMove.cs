@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace J2P.Test
+namespace CustomPhysics2D.Test
 {
     public class TestRigidbodyMove : MonoBehaviour
     {
@@ -48,9 +48,9 @@ namespace J2P.Test
 
         private void SetDestPoint()
         {
-            var width = _jRigidbody.rect.width;
-            var height = _jRigidbody.rect.height;
-            var worldRect = JPhysicsManager.instance.quadTree.worldRect;
+            var width = _jRigidbody.ItemRect.width;
+            var height = _jRigidbody.ItemRect.height;
+            var worldRect = JPhysicsManager.instance.quadTree.WorldRect;
             //_destPoint.x = Random.Range( worldRect.xMin, worldRect.xMax );
             //_destPoint.y = Random.Range( worldRect.yMin, worldRect.yMax );
             _destPoint.x = Random.Range(worldRect.xMin + width / 2, worldRect.xMax - width / 2);

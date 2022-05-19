@@ -1,65 +1,135 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
-namespace J2P
+namespace CustomPhysics2D
 {
-	public class QuadTreeNode
-	{
-		//Include children's items
-		public int totalItemsCount { get; set; }
+    /// <summary>
+    /// 四叉树节点信息
+    /// </summary>
+    public class QuadTreeNode
+    {
+        private const int MAX_ROW_LENGTH = 2;
+        private const int MAX_COLUMN_LENGTH = 2;
 
-		public bool isLeaf { get; }
+        //Include children's items
+        public int TotalItemsCount
+        {
+            get; private set;
+        }
 
-		public List<IQuadTreeItem> items { get; } = new List<IQuadTreeItem>();
+        public bool IsLeaf
+        {
+            get;
+        }
 
-		public Rect rect { get; }
+        /// <summary>
+        /// 该节点下的所有物体，含压线物体
+        /// </summary>
+        public List<IQuadTreeItem> Items { get; }
 
-		public Rect looseRect { get; }
+        public Rect NodeRect
+        {
+            get;
+        }
 
-		public QuadTreeNode[,] childNodes { get; }
+        public Rect NodeLooseRect
+        {
+            get;
+        }
 
-		public QuadTreeNode( Rect rect, int depth, int maxDepth )
-		{
-			this.rect = rect;
-			var looseRectSize = 2 * rect.size;
-			var looseRectPos = this.rect.center - this.rect.size;
-			this.looseRect = new Rect( looseRectPos, looseRectSize );
+        public QuadTreeNode[,] ChildNodes
+        {
+            get;
+        }
 
-			if( depth == maxDepth )
-			{
-				isLeaf = true;
-			}
-			else
-			{
-				isLeaf = false;
-			}
-			if( isLeaf == false )
-			{
-				childNodes = new QuadTreeNode[2, 2];
-				var childSize = rect.size / 2;
-				for( int i = 0; i < 2; i++ )
-				{
-					for( int j = 0; j < 2; j++ )
-					{
-						var childRectMin = rect.min + new Vector2( j * childSize.x, i * childSize.y );
-						var childRect = new Rect( childRectMin, childSize );
-						childNodes[i, j] = new QuadTreeNode( childRect, depth + 1, maxDepth );
-					}
-				}
-			}
-		}
+        /// <summary>
+        /// ChildNodes索引器
+        /// </summary>
+        /// <param name="position">某四叉树深度的坐标</param>
+        /// <returns></returns>
+        public QuadTreeNode this[PositionInQuadTreeDepth position]
+        {
+            get
+            {
+                if (CorrectPosition(position))
+                    return ChildNodes[position.rowIndex, position.columnIndex];
+                else
+                    throw new System.Exception("Wrong position!" + position.ToString());
+            }
+            set
+            {
+                if (CorrectPosition(position))
+                    ChildNodes[position.rowIndex, position.columnIndex] = value;
+            }
+        }
 
-		public void AddItem( IQuadTreeItem item )
-		{
-			items.Add( item );
-			totalItemsCount += 1;
-		}
+        public QuadTreeNode(Rect rect, int depth, int maxDepth)
+        {
+            Items = new List<IQuadTreeItem>();
+            NodeRect = rect;
+            var looseRectSize = 2 * rect.size;
+            var looseRectPos = NodeRect.center - NodeRect.size;
+            NodeLooseRect = new Rect(looseRectPos, looseRectSize);
+            IsLeaf = depth == maxDepth;
 
-		public void RemoveItem( IQuadTreeItem item )
-		{
-			totalItemsCount -= 1;
-			items.Remove( item );
-		}
-	}
+            if (IsLeaf == false)
+            {
+                ChildNodes = new QuadTreeNode[MAX_ROW_LENGTH, MAX_COLUMN_LENGTH];
+                var childSize = rect.size / 2;
+                for (int i = 0; i < MAX_ROW_LENGTH; i++)
+                {
+                    for (int j = 0; j < MAX_COLUMN_LENGTH; j++)
+                    {
+                        var childRectMin = rect.min + new Vector2(j * childSize.x, i * childSize.y);
+                        var childRect = new Rect(childRectMin, childSize);
+                        ChildNodes[i, j] = new QuadTreeNode(childRect, depth + 1, maxDepth);
+                    }
+                }
+            }
+        }
+
+        public void AddItem(IQuadTreeItem item)
+        {
+            Items.Add(item);
+            TotalItemsCount += 1;
+        }
+
+        public void AddItemToChildren(IQuadTreeItem item, PositionInQuadTree posInfo, int targetDepth, int curDepth = 0)
+        {
+            if (targetDepth < 0) return;
+            if (curDepth == targetDepth) AddItem(item);
+            else
+            {
+                var temp = this[posInfo.posInDepths[curDepth]];
+                temp.AddItemToChildren(item, posInfo, targetDepth, curDepth + 1);
+            }
+            TotalItemsCount += 1;
+        }
+
+        public void RemoveItem(IQuadTreeItem item)
+        {
+            TotalItemsCount -= 1;
+            Items.Remove(item);
+        }
+
+        public void RemoveItemInChildren(IQuadTreeItem item, PositionInQuadTree posInfo, int targetDepth, int curDepth = 0)
+        {
+            if (targetDepth < 0) return;
+            if (curDepth == targetDepth) RemoveItem(item);
+            else
+            {
+                var temp = this[posInfo.posInDepths[curDepth]];
+                temp.RemoveItemInChildren(item, posInfo, targetDepth, curDepth + 1);
+            }
+            TotalItemsCount -= 1;
+        }
+
+        private static bool CorrectPosition(PositionInQuadTreeDepth position)
+        {
+            return position.rowIndex < MAX_ROW_LENGTH
+                                && position.rowIndex >= 0
+                                && position.columnIndex < MAX_COLUMN_LENGTH
+                                && position.columnIndex >= 0;
+        }
+    }
 }

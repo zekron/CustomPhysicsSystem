@@ -10,7 +10,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace>
     </RootNamespace>
-    <ProjectGuid>{20F7A949-44CA-E370-0CF7-0005BE95F163}</ProjectGuid>
+    <ProjectGuid>{8773949A-B466-C561-D4F5-1939C60B6359}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -73,6 +73,7 @@
     <Compile Include="Assets\J2P\Scripts\JPhysicsSetting.cs" />
     <Compile Include="Assets\J2P\Scripts\Collision\Collidioninfo.cs" />
     <Compile Include="Assets\J2P\Scripts\QuadTree\QuadTree.cs" />
+    <Compile Include="Assets\J2P\Scripts\QuadTree\PositionInQuadTreeDepth.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -681,6 +682,8 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
