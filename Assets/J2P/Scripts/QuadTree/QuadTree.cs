@@ -92,7 +92,7 @@ namespace CustomPhysics2D
         {
             var newPosInfo = item.CurrentPosInQuadTree;
             GetPosInfo(item.Center, item.Size, ref newPosInfo);
-            if (newPosInfo.Equals(item.LastPosInQuadTree)) return;
+            if (newPosInfo.Equals(item.LastPosInQuadTree) && !newPosInfo.inRoot) return;
 
             var lastPosInfo = item.LastPosInQuadTree;
             if (lastPosInfo.posInDepths != null)
@@ -107,7 +107,7 @@ namespace CustomPhysics2D
             }
 
             //item.currentPosInQuadTree.Copy( newPosInfo );
-            newPosInfo.CopyTo(lastPosInfo);
+            lastPosInfo.CopyFrom(newPosInfo);
             item.LastPosInQuadTree = lastPosInfo;
 
             //更新物体的当前帧位置信息
