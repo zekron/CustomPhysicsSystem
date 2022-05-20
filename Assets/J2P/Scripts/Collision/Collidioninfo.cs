@@ -1,28 +1,18 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
+﻿using System;
+using UnityEngine;
 
 namespace CustomPhysics2D
 {
 	public struct CollisionInfo : IEquatable<CollisionInfo>
 	{
-		public bool isLeftCollision;
+		internal CollisionDirection DirectionInfo;
+		internal Collider2D collider;
+		internal Collider2D hitCollider;
+		internal Vector2 position;
 
-		public bool isRightCollision;
-
-		public bool isAboveCollision;
-
-		public bool isBelowCollision;
-
-		public Collider2D collider;
-
-		public Collider2D hitCollider;
-
-		public Vector2 position;
-
-		public bool Equals( CollisionInfo obj )
+		public bool Equals(CollisionInfo obj)
 		{
-			return ( this.collider == obj.collider ) && ( this.hitCollider == obj.hitCollider ) || ( this.collider == obj.hitCollider ) && ( this.hitCollider == obj.collider );
+			return (collider == obj.collider) && (hitCollider == obj.hitCollider) || (collider == obj.hitCollider) && (hitCollider == obj.collider);
 		}
 
 		public override int GetHashCode()
@@ -32,14 +22,21 @@ namespace CustomPhysics2D
 
 		public void Reset()
 		{
-			this.isLeftCollision = false;
-			this.isRightCollision = false;
-			this.isAboveCollision = false;
-			this.isBelowCollision = false;
-			this.collider = null;
-			this.hitCollider = null;
-			this.position.x = 0.0f;
-			this.position.y = 0.0f;
+			DirectionInfo = CollisionDirection.None;
+			collider = null;
+			hitCollider = null;
+			position.x = 0.0f;
+			position.y = 0.0f;
 		}
+	}
+
+	public enum CollisionDirection
+	{
+		None = -1,
+
+		Left,
+		Right,
+		Up,
+		Down,
 	}
 }
