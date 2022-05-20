@@ -43,7 +43,7 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -98,7 +98,8 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_LightingSettings: {fileID: 4890085278179872738, guid: bba0ae49e5c88fd43b1ea1246d8db6e4,
+    type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -118,6 +119,8 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
@@ -148,13 +151,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 88741963}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dcbc1150f5e0c404491a54d31e865c29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   normalMaterial: {fileID: 2100000, guid: c48af4c4f8e4c0f4296154d38f141881, type: 2}
-  hitMaterial: {fileID: 2100000, guid: 2e06eaa8198753e469459e9230e7867a, type: 2}
+  hitMaterial: {fileID: 2100000, guid: 4037a043b75fae64c8da4f6b420676a1, type: 2}
   randomSpeed: 10
 --- !u!61 &88741965
 BoxCollider2D:
@@ -194,10 +197,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask: 0
+  showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
-  showDebugGizoms: 0
   gravityScale: 0
   collisionDetectionMode: 0
 --- !u!212 &88741967
@@ -215,6 +217,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -262,7 +265,7 @@ Transform:
   m_LocalScale: {x: 3.687, y: 3.463, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &138953749
 GameObject:
@@ -309,10 +312,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e6a71b2a4ac2a240a74f0d708e5a3f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask: 0
+  showDebugGizoms: 0
   horizontalRayCount: 4
   verticalRayCount: 4
-  showDebugGizoms: 0
 --- !u!61 &138953752
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -354,6 +356,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -416,13 +419,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 361758936}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dcbc1150f5e0c404491a54d31e865c29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   normalMaterial: {fileID: 2100000, guid: c48af4c4f8e4c0f4296154d38f141881, type: 2}
-  hitMaterial: {fileID: 2100000, guid: 2e06eaa8198753e469459e9230e7867a, type: 2}
+  hitMaterial: {fileID: 2100000, guid: 4037a043b75fae64c8da4f6b420676a1, type: 2}
   randomSpeed: 10
 --- !u!61 &361758938
 BoxCollider2D:
@@ -462,10 +465,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask: 0
+  showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
-  showDebugGizoms: 0
   gravityScale: 0
   collisionDetectionMode: 0
 --- !u!212 &361758940
@@ -483,6 +485,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -530,7 +533,7 @@ Transform:
   m_LocalScale: {x: 3.687, y: 3.463, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &437751203
 GameObject:
@@ -576,7 +579,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &595257278
 GameObject:
@@ -605,13 +608,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 595257278}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dcbc1150f5e0c404491a54d31e865c29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   normalMaterial: {fileID: 2100000, guid: c48af4c4f8e4c0f4296154d38f141881, type: 2}
-  hitMaterial: {fileID: 2100000, guid: 2e06eaa8198753e469459e9230e7867a, type: 2}
+  hitMaterial: {fileID: 2100000, guid: 4037a043b75fae64c8da4f6b420676a1, type: 2}
   randomSpeed: 10
 --- !u!61 &595257280
 BoxCollider2D:
@@ -651,10 +654,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask: 0
+  showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
-  showDebugGizoms: 0
   gravityScale: 0
   collisionDetectionMode: 0
 --- !u!212 &595257282
@@ -672,6 +674,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -719,7 +722,7 @@ Transform:
   m_LocalScale: {x: 3.687, y: 3.463, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &788905709
 GameObject:
@@ -752,10 +755,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e6a71b2a4ac2a240a74f0d708e5a3f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask: 0
+  showDebugGizoms: 0
   horizontalRayCount: 4
   verticalRayCount: 4
-  showDebugGizoms: 0
 --- !u!61 &788905711
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -797,6 +799,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -891,10 +894,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e6a71b2a4ac2a240a74f0d708e5a3f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask: 0
+  showDebugGizoms: 0
   horizontalRayCount: 4
   verticalRayCount: 4
-  showDebugGizoms: 0
 --- !u!61 &921307316
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -936,6 +938,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1029,10 +1032,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask: 0
+  showDebugGizoms: 1
   horizontalRayCount: 3
   verticalRayCount: 3
-  showDebugGizoms: 1
   gravityScale: 0
   collisionDetectionMode: 1
 --- !u!212 &997687460
@@ -1050,6 +1052,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1097,7 +1100,7 @@ Transform:
   m_LocalScale: {x: 4.7603884, y: 5.4310455, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &997687462
 MonoBehaviour:
@@ -1112,7 +1115,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   normalMaterial: {fileID: 2100000, guid: c48af4c4f8e4c0f4296154d38f141881, type: 2}
-  hitMaterial: {fileID: 2100000, guid: 2e06eaa8198753e469459e9230e7867a, type: 2}
+  hitMaterial: {fileID: 2100000, guid: 4037a043b75fae64c8da4f6b420676a1, type: 2}
   randomSpeed: 20
 --- !u!1 &1076572214
 GameObject:
@@ -1141,13 +1144,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1076572214}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dcbc1150f5e0c404491a54d31e865c29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   normalMaterial: {fileID: 2100000, guid: c48af4c4f8e4c0f4296154d38f141881, type: 2}
-  hitMaterial: {fileID: 2100000, guid: 2e06eaa8198753e469459e9230e7867a, type: 2}
+  hitMaterial: {fileID: 2100000, guid: 4037a043b75fae64c8da4f6b420676a1, type: 2}
   randomSpeed: 10
 --- !u!61 &1076572216
 BoxCollider2D:
@@ -1187,10 +1190,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask: 0
+  showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
-  showDebugGizoms: 0
   gravityScale: 0
   collisionDetectionMode: 0
 --- !u!212 &1076572218
@@ -1208,6 +1210,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1255,7 +1258,7 @@ Transform:
   m_LocalScale: {x: 3.687, y: 3.463, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1088137830
 GameObject:
@@ -1284,13 +1287,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1088137830}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dcbc1150f5e0c404491a54d31e865c29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   normalMaterial: {fileID: 2100000, guid: c48af4c4f8e4c0f4296154d38f141881, type: 2}
-  hitMaterial: {fileID: 2100000, guid: 2e06eaa8198753e469459e9230e7867a, type: 2}
+  hitMaterial: {fileID: 2100000, guid: 4037a043b75fae64c8da4f6b420676a1, type: 2}
   randomSpeed: 20
 --- !u!61 &1088137832
 BoxCollider2D:
@@ -1330,12 +1333,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask: 0
+  showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
-  showDebugGizoms: 1
   gravityScale: 0
-  collisionDetectionMode: 1
+  collisionDetectionMode: 0
 --- !u!212 &1088137834
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1351,6 +1353,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1398,7 +1401,7 @@ Transform:
   m_LocalScale: {x: 3.3437936, y: 3.6384144, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1089958592
 GameObject:
@@ -1445,10 +1448,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e6a71b2a4ac2a240a74f0d708e5a3f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask: 0
+  showDebugGizoms: 0
   horizontalRayCount: 4
   verticalRayCount: 4
-  showDebugGizoms: 0
 --- !u!61 &1089958595
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1490,6 +1492,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1552,13 +1555,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1275317352}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dcbc1150f5e0c404491a54d31e865c29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   normalMaterial: {fileID: 2100000, guid: c48af4c4f8e4c0f4296154d38f141881, type: 2}
-  hitMaterial: {fileID: 2100000, guid: 2e06eaa8198753e469459e9230e7867a, type: 2}
+  hitMaterial: {fileID: 2100000, guid: 4037a043b75fae64c8da4f6b420676a1, type: 2}
   randomSpeed: 10
 --- !u!61 &1275317354
 BoxCollider2D:
@@ -1598,10 +1601,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask: 0
+  showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
-  showDebugGizoms: 0
   gravityScale: 0
   collisionDetectionMode: 0
 --- !u!212 &1275317356
@@ -1619,6 +1621,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1666,7 +1669,50 @@ Transform:
   m_LocalScale: {x: 3.687, y: 3.463, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1338225095
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1338225097}
+  - component: {fileID: 1338225096}
+  m_Layer: 0
+  m_Name: PhysicsMgr
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1338225096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1338225095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccf44bdf5c9099f4d8475aa6587d59f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1338225097
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1338225095}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1816804422
 GameObject:
@@ -1695,13 +1741,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1816804422}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dcbc1150f5e0c404491a54d31e865c29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   normalMaterial: {fileID: 2100000, guid: c48af4c4f8e4c0f4296154d38f141881, type: 2}
-  hitMaterial: {fileID: 2100000, guid: 2e06eaa8198753e469459e9230e7867a, type: 2}
+  hitMaterial: {fileID: 2100000, guid: 4037a043b75fae64c8da4f6b420676a1, type: 2}
   randomSpeed: 10
 --- !u!61 &1816804424
 BoxCollider2D:
@@ -1741,10 +1787,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask: 0
+  showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
-  showDebugGizoms: 0
   gravityScale: 0
   collisionDetectionMode: 0
 --- !u!212 &1816804426
@@ -1762,6 +1807,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1809,7 +1855,7 @@ Transform:
   m_LocalScale: {x: 3.687, y: 3.463, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1998625828
 GameObject:
@@ -1843,7 +1889,7 @@ Transform:
   - {fileID: 1089958593}
   - {fileID: 138953750}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2031376860
 GameObject:
@@ -1955,13 +2001,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2075770446}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dcbc1150f5e0c404491a54d31e865c29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   normalMaterial: {fileID: 2100000, guid: c48af4c4f8e4c0f4296154d38f141881, type: 2}
-  hitMaterial: {fileID: 2100000, guid: 2e06eaa8198753e469459e9230e7867a, type: 2}
+  hitMaterial: {fileID: 2100000, guid: 4037a043b75fae64c8da4f6b420676a1, type: 2}
   randomSpeed: 10
 --- !u!61 &2075770448
 BoxCollider2D:
@@ -2001,10 +2047,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask: 0
+  showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
-  showDebugGizoms: 0
   gravityScale: 0
   collisionDetectionMode: 0
 --- !u!212 &2075770450
@@ -2022,6 +2067,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2069,7 +2115,7 @@ Transform:
   m_LocalScale: {x: 3.687, y: 3.463, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2077486570
 GameObject:
@@ -2098,13 +2144,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2077486570}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dcbc1150f5e0c404491a54d31e865c29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   normalMaterial: {fileID: 2100000, guid: c48af4c4f8e4c0f4296154d38f141881, type: 2}
-  hitMaterial: {fileID: 2100000, guid: 2e06eaa8198753e469459e9230e7867a, type: 2}
+  hitMaterial: {fileID: 2100000, guid: 4037a043b75fae64c8da4f6b420676a1, type: 2}
   randomSpeed: 10
 --- !u!61 &2077486572
 BoxCollider2D:
@@ -2144,10 +2190,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask: 0
+  showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
-  showDebugGizoms: 0
   gravityScale: 0
   collisionDetectionMode: 0
 --- !u!212 &2077486574
@@ -2165,6 +2210,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2212,5 +2258,5 @@ Transform:
   m_LocalScale: {x: 3.687, y: 3.463, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

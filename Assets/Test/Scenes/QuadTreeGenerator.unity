@@ -352,10 +352,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask: 0
+  showDebugGizoms: 1
   horizontalRayCount: 4
   verticalRayCount: 4
-  showDebugGizoms: 0
   gravityScale: 0
   collisionDetectionMode: 1
 --- !u!1 &1702534528

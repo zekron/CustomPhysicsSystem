@@ -10,94 +10,56 @@ namespace CustomPhysics2D
 
 	public class JCollisionController : MonoBehaviour, IQuadTreeItem
 	{
-		[HideInInspector]
-		public int collisionMask;
-
-		public int horizontalRayCount = 4;
-
-		public int verticalRayCount = 4;
-
-		//When collision detection, place the start point at the vertex of the bounds with zoom in by this distance
-		protected float _shrinkWidth = 0.1f;
-
-		//When movement is zero, rayLength = _shringkWidth + _expandWidth
-		protected float _expandWidth = 0.1f;
+		protected const int MAX_HIT_COLLIDER_COUNT = 20;
 
 		public CollisionEvent onCollisionEnter;
-
 		public CollisionEvent onCollisionExit;
-
 		public CollisionEvent onTriggerEnter;
-
 		public CollisionEvent onTriggerExit;
 
+		protected Transform _transform;
+
+		[SerializeField] private bool showDebugGizoms = false;
+		[SerializeField] protected int horizontalRayCount = 4;
+		[SerializeField] protected int verticalRayCount = 4;
+
+		/// <summary>
+		/// When collision detection, place the start point at the vertex of the bounds with zoom in by this distance
+		/// </summary>
+		protected float _shrinkWidth = 0.1f;
+		/// <summary>
+		/// When movement is zero, rayLength = _shringkWidth + _expandWidth
+		/// </summary>
+		protected float _minRayLength = 0.1f;
 		private Collider2D _collider2D;
 
-		public Collider2D SelfCollider
-		{
-			get
-			{
-				return _collider2D;
-			}
-		}
-
-		protected Bounds _bounds
-		{
-			get
-			{
-				return SelfCollider.bounds;
-			}
-		}
-
-		public bool showDebugGizoms = false;
-
+		protected int collisionMask;
 		protected float _horizontalRaySpace;
-
 		protected float _verticalRaySpace;
 
+		/// <summary>
+		/// Colliders that won't collide with this collider
+		/// </summary>
+		protected HashSet<Collider2D> _ignoredColliders = new HashSet<Collider2D>();
 		protected RaycastOrigins _raycastOrigins = new RaycastOrigins();
 
 		protected RaycastHit2D[] _raycastHit2D;
-
 		protected JRaycastHitList _jraycastHitList;
 
 		private PositionInQuadTree _lastPosInQuadTree;
-
 		private PositionInQuadTree _currentPosInQuadTree;
 
 		private Rect _rect;
 
-		protected virtual int _maxHitCollidersCount
-		{
-			get
-			{
-				return 20;
-			}
-		}
+		public Collider2D SelfCollider => _collider2D;
 
-		public Vector2 Size
-		{
-			get
-			{
-				return _bounds.size;
-			}
-		}
+		protected Bounds SelfBounds => SelfCollider.bounds;
 
-		public Vector2 Center
-		{
-			get
-			{
-				return _bounds.center;
-			}
-		}
+		public Vector2 Size => SelfBounds.size;
 
-		public Rect ItemRect
-		{
-			get
-			{
-				return _rect;
-			}
-		}
+		public Vector2 Center => SelfBounds.center;
+
+		public Rect ItemRect => _rect;
 
 		public PositionInQuadTree LastPosInQuadTree
 		{
@@ -123,29 +85,16 @@ namespace CustomPhysics2D
 			}
 		}
 
-		/// <summary>
-		/// Colliders that won't collide with this collider
-		/// </summary>
-		protected HashSet<Collider2D> _ignoredColliders = new HashSet<Collider2D>();
-
-		protected Transform _transform;
-
 		protected virtual void Awake()
 		{
-			_collider2D = this.gameObject.GetComponent<Collider2D>();
+			_collider2D = GetComponent<Collider2D>();
 
-			Vector2 rectMin = _bounds.min;
-			_rect = new Rect(rectMin, _bounds.size);
+			Vector2 rectMin = SelfBounds.min;
+			_rect = new Rect(rectMin, SelfBounds.size);
 
-			_raycastHit2D = new RaycastHit2D[_maxHitCollidersCount];
-			_jraycastHitList = new JRaycastHitList(_maxHitCollidersCount);
-			_transform = this.gameObject.transform;
-		}
-
-		public void InitializePosInQuadTree(QuadTree quadTree)
-		{
-			_lastPosInQuadTree = new PositionInQuadTree(quadTree.GetDepth(Size));
-			_currentPosInQuadTree = new PositionInQuadTree(quadTree.GetDepth(Size));
+			_raycastHit2D = new RaycastHit2D[MAX_HIT_COLLIDER_COUNT];
+			_jraycastHitList = new JRaycastHitList(MAX_HIT_COLLIDER_COUNT);
+			_transform = transform;
 		}
 
 		private void OnDestroy()
@@ -156,8 +105,43 @@ namespace CustomPhysics2D
 			onCollisionExit.ClearAllDelegates();
 		}
 
-		public virtual void Simulate(float deltaTime)
+		private void OnDrawGizmos()
 		{
+			if (!showDebugGizoms) return;
+
+			Gizmos.color = Color.red;
+			_collider2D = GetComponent<Collider2D>();
+			Gizmos.DrawWireCube(Center, Size);
+
+			UpdateRaycastOrigins();
+			Gizmos.color = Color.green;
+			for (int i = 0; i < horizontalRayCount; i++)
+			{
+				Gizmos.DrawSphere(new Vector3(_raycastOrigins.bottomLeft.x,
+											  _raycastOrigins.bottomLeft.y + _horizontalRaySpace * i),
+								  0.05f);
+				Gizmos.DrawSphere(new Vector3(_raycastOrigins.bottomRight.x,
+											  _raycastOrigins.bottomRight.y + _horizontalRaySpace * i),
+								  0.05f);
+			}
+			Gizmos.color = Color.blue;
+			for (int i = 0; i < verticalRayCount; i++)
+			{
+				Gizmos.DrawSphere(new Vector3(_raycastOrigins.bottomLeft.x + _verticalRaySpace * i,
+											  _raycastOrigins.bottomLeft.y),
+								  0.05f);
+				Gizmos.DrawSphere(new Vector3(_raycastOrigins.topLeft.x + _verticalRaySpace * i,
+											  _raycastOrigins.topLeft.y),
+								  0.05f);
+			}
+		}
+
+		public virtual void Simulate(float deltaTime) { }
+
+		public void InitializePosInQuadTree(QuadTree quadTree)
+		{
+			_lastPosInQuadTree = new PositionInQuadTree(quadTree.GetDepth(Size));
+			_currentPosInQuadTree = new PositionInQuadTree(quadTree.GetDepth(Size));
 		}
 
 		protected void UpdateRect()
@@ -169,15 +153,15 @@ namespace CustomPhysics2D
 		{
 			bounds.Expand(_shrinkWidth * -2);
 			var boundsSize = bounds.size;
-			_horizontalRaySpace = boundsSize.y / (this.horizontalRayCount - 1);
-			_verticalRaySpace = boundsSize.x / (this.verticalRayCount - 1);
+			_horizontalRaySpace = boundsSize.y / (horizontalRayCount - 1);
+			_verticalRaySpace = boundsSize.x / (verticalRayCount - 1);
 		}
 
 		protected void UpdateRaycastOrigins()
 		{
 			//把原碰撞框内缩返回一个新的碰撞框,记录新碰撞框四个顶点用于射线检测的起点
-			var bounds = _bounds;
-			this.CalculateRaySpace(ref bounds);
+			var bounds = SelfBounds;
+			CalculateRaySpace(ref bounds);
 
 			// Top Left
 			_raycastOrigins.topLeft.x = bounds.min.x;

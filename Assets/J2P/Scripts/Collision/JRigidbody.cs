@@ -16,24 +16,16 @@ namespace CustomPhysics2D
 
 		public float gravityScale = 1.0f;
 
-		public CollisionDetectionMode collisionDetectionMode;
+		[SerializeField] private CollisionDetectionMode collisionDetectionMode;
 
 		private Vector2 _velocity;
-
 		private CollisionInfo _collisionInfo;
-
 		private CollisionInfo _triggerInfo;
-
 		private bool _colliderIsTrigger = false;
-
 		private JPhysicsManager _physicsManager;
-
 		private Vector3 _movement = Vector3.zero;
-
 		private HashSet<Collider2D> _currentDetectionHitTriggers = new HashSet<Collider2D>();
-
 		private HashSet<Collider2D> _currentDetectionHitColliders = new HashSet<Collider2D>();
-
 		private Vector2 _raycastDirection;
 
 		#region Properties
@@ -140,7 +132,7 @@ namespace CustomPhysics2D
 
 		private void ResetStatesBeforeCollision()
 		{
-			_colliderIsTrigger = this.SelfCollider.isTrigger;
+			_colliderIsTrigger = SelfCollider.isTrigger;
 			_collisionInfo.Reset();
 			_triggerInfo.Reset();
 			_raycastOrigins.Reset();
@@ -179,13 +171,13 @@ namespace CustomPhysics2D
 
 		public void Move()
 		{
-			if (this.SelfCollider == null || !this.SelfCollider.enabled)
+			if (SelfCollider == null || !SelfCollider.enabled)
 			{
 				return;
 			}
 
-			this.MovePosition(ref _movement);
-			this.UpdateRect();
+			MovePosition(ref _movement);
+			UpdateRect();
 		}
 
 		private void FixInsertion()
@@ -247,35 +239,31 @@ namespace CustomPhysics2D
 
 		private void HorizontalCollisionDetect()
 		{
-			int detectionCount = 1;
+			int detectionCount = 1; //检测次数，运动时只检测运动方向
 			if (_movement.x == 0)
 			{
-				if (this.collisionDetectionMode == CollisionDetectionMode.WhenMoving)
-				{
-					return;
-				}
+				if (collisionDetectionMode == CollisionDetectionMode.WhenMoving) return;
+
 				detectionCount = 2;
 			}
 
-			var directionX = _movement.x >= 0 ? 1 : -1;
+			var directionX = _movement.x >= 0 ? Vector2.right : Vector2.left;
 
-			for (int d = 0; d < detectionCount; d++)
+			for (int cnt = 0; cnt < detectionCount; cnt++)
 			{
-				directionX = d == 0 ? directionX : -directionX;
-				var rayOrigin = (directionX == 1) ? _raycastOrigins.bottomRight : _raycastOrigins.bottomLeft;
+				directionX = cnt == 0 ? directionX : -directionX;   //优先检测移动方向
+				var rayOrigin = (directionX == Vector2.right) ? _raycastOrigins.bottomRight : _raycastOrigins.bottomLeft;
 				var rayLength = Mathf.Abs(_movement.x) + _shrinkWidth;
 				if (_movement.x == 0f)
 				{
-					rayLength += _expandWidth;
+					rayLength += _minRayLength;
 				}
 
-				for (int i = 0; i < this.horizontalRayCount; i++)
+				for (int i = 0; i < horizontalRayCount; i++)
 				{
-					_raycastDirection.x = 1.0f;
-					_raycastDirection.y = 0.0f;
-					_raycastDirection.x *= directionX;
-					_raycastDirection.y *= directionX;
+					_raycastDirection = directionX;
 
+					Debug.DrawLine(rayOrigin, rayOrigin + _raycastDirection * rayLength, Color.red);
 					if (JPhysicsManager.useUnityRayCast)
 					{
 						var hitCount = Physics2D.RaycastNonAlloc(rayOrigin, _raycastDirection, _raycastHit2D, rayLength, this.collisionMask);
@@ -286,7 +274,7 @@ namespace CustomPhysics2D
 							{
 								continue;
 							}
-							HandleHorizontalHitResult(hit.collider, hit.point, hit.distance, directionX);
+							HandleHitResult(hit.collider, hit.point, hit.distance, directionX.ToCollisionDirection());
 						}
 					}
 					else
@@ -300,7 +288,7 @@ namespace CustomPhysics2D
 							{
 								continue;
 							}
-							HandleHorizontalHitResult(hit.collider, hit.point, hit.distance, directionX);
+							HandleHitResult(hit.collider, hit.point, hit.distance, directionX.ToCollisionDirection());
 						}
 					}
 					rayOrigin.y += _horizontalRaySpace;
@@ -308,29 +296,22 @@ namespace CustomPhysics2D
 			}
 		}
 
-		private void HandleHorizontalHitResult(Collider2D hitCollider, Vector2 hitPoint, float hitDistance, int directionX)
+		private void HandleHorizontalHitResult(Collider2D hitCollider, Vector2 hitPoint, float hitDistance, CollisionDirection directionX)
 		{
 			var myLayer = this.gameObject.layer;
 			//Trigger
-			if (HitTrigger(hitCollider, hitPoint, directionX, null))
+			if (HitTrigger(hitCollider, hitPoint, directionX))
 			{
 				return;
 			}
 
 			// Collision Info
-			_collisionInfo.collider = this.SelfCollider;
+			_collisionInfo.collider = SelfCollider;
 			_collisionInfo.hitCollider = hitCollider;
 			_collisionInfo.position = hitPoint;
 
 			// Collision Direction
-			if (directionX == -1)
-			{
-				_collisionInfo.DirectionInfo = CollisionDirection.Left;
-			}
-			if (directionX == 1)
-			{
-				_collisionInfo.DirectionInfo = CollisionDirection.Right;
-			}
+			_collisionInfo.DirectionInfo = directionX;
 
 			//Push Collision 
 			if (!_currentDetectionHitColliders.Contains(hitCollider))
@@ -344,7 +325,7 @@ namespace CustomPhysics2D
 			{
 				if (Mathf.Abs(hitDistance - _shrinkWidth) < Mathf.Abs(_movement.x))
 				{
-					_movement.x = (hitDistance - _shrinkWidth) * directionX;
+					_movement.x = (hitDistance - _shrinkWidth) * (directionX == CollisionDirection.Left ? -1 : 1);
 				}
 			}
 		}
@@ -354,34 +335,33 @@ namespace CustomPhysics2D
 			int detectionCount = 1;
 			if (_movement.y == 0)
 			{
-				if (this.collisionDetectionMode != CollisionDetectionMode.WhenMoving)
+				if (collisionDetectionMode != CollisionDetectionMode.WhenMoving)
 				{
 					detectionCount = 2;
 				}
 			}
 
-			var directionY = _movement.y > 0 ? 1 : -1;
+			var directionY = _movement.y > 0 ? Vector2.up : Vector2.down;
 
 			for (int d = 0; d < detectionCount; d++)
 			{
 				directionY = d == 0 ? directionY : -directionY;
-				var rayOrigin = (directionY == 1) ? _raycastOrigins.topLeft : _raycastOrigins.bottomLeft;
+				var rayOrigin = (directionY == Vector2.up) ? _raycastOrigins.topLeft : _raycastOrigins.bottomLeft;
 				rayOrigin.x += _movement.x;
 
 				var rayLength = Mathf.Abs(_movement.y) + _shrinkWidth;
 				if (_movement.y == 0f)
 				{
-					rayLength += _expandWidth;
+					rayLength += _minRayLength;
 				}
-				for (int i = 0; i < this.verticalRayCount; i++)
+				for (int i = 0; i < verticalRayCount; i++)
 				{
-					_raycastDirection.x = 0.0f;
-					_raycastDirection.y = 1.0f;
-					_raycastDirection.x *= directionY;
-					_raycastDirection.y *= directionY;
+					_raycastDirection = directionY;
+
+					Debug.DrawLine(rayOrigin, rayOrigin + _raycastDirection * rayLength, Color.red);
 					if (JPhysicsManager.useUnityRayCast)
 					{
-						var hitCount = Physics2D.RaycastNonAlloc(rayOrigin, _raycastDirection, _raycastHit2D, rayLength, this.collisionMask);
+						var hitCount = Physics2D.RaycastNonAlloc(rayOrigin, _raycastDirection, _raycastHit2D, rayLength, collisionMask);
 						for (int j = 0; j < hitCount; j++)
 						{
 							var hit = _raycastHit2D[j];
@@ -392,13 +372,13 @@ namespace CustomPhysics2D
 							{
 								continue;
 							}
-							HandleVerticalHitResult(hit.collider, hit.point, hit.distance, directionY);
+							HandleHitResult(hit.collider, hit.point, hit.distance, directionY.ToCollisionDirection());
 						}
 					}
 					else
 					{
 						_jraycastHitList.Clear();
-						JPhysics.Raycast(JPhysicsManager.instance.quadTree, rayOrigin, _raycastDirection, ref _jraycastHitList, rayLength, this.collisionMask);
+						JPhysics.Raycast(JPhysicsManager.instance.quadTree, rayOrigin, _raycastDirection, ref _jraycastHitList, rayLength, collisionMask);
 						for (int j = 0; j < _jraycastHitList.count; j++)
 						{
 							var hit = _jraycastHitList[j];
@@ -406,7 +386,7 @@ namespace CustomPhysics2D
 							{
 								continue;
 							}
-							HandleVerticalHitResult(hit.collider, hit.point, hit.distance, directionY);
+							HandleHitResult(hit.collider, hit.point, hit.distance, directionY.ToCollisionDirection());
 						}
 					}
 
@@ -415,11 +395,11 @@ namespace CustomPhysics2D
 			}
 		}
 
-		private void HandleVerticalHitResult(Collider2D hitCollider, Vector2 hitPoint, float hitDistance, int directionY)
+		private void HandleVerticalHitResult(Collider2D hitCollider, Vector2 hitPoint, float hitDistance, CollisionDirection directionY)
 		{
 			var myLayer = this.gameObject.layer;
 			// Trigger?
-			if (HitTrigger(hitCollider, hitPoint, null, directionY))
+			if (HitTrigger(hitCollider, hitPoint, directionY))
 			{
 				return;
 			}
@@ -430,14 +410,7 @@ namespace CustomPhysics2D
 			_collisionInfo.position = hitPoint;
 
 			// Collision Direction
-			if (directionY == -1)
-			{
-				_collisionInfo.DirectionInfo = CollisionDirection.Down;
-			}
-			if (directionY == 1)
-			{
-				_collisionInfo.DirectionInfo = CollisionDirection.Up;
-			}
+			_collisionInfo.DirectionInfo = directionY;
 
 			// Need Push Collision ?
 			if (!_currentDetectionHitColliders.Contains(hitCollider))
@@ -451,42 +424,71 @@ namespace CustomPhysics2D
 			{
 				if (Mathf.Abs(hitDistance - _shrinkWidth) < Mathf.Abs(_movement.y))
 				{
-					_movement.y = (hitDistance - _shrinkWidth) * directionY;
+					_movement.y = (hitDistance - _shrinkWidth) * (directionY == CollisionDirection.Up ? 1 : -1);
 				}
 			}
 		}
+		
+		private void HandleHitResult(Collider2D hitCollider, Vector2 hitPoint, float hitDistance, CollisionDirection direction)
+		{
+			var myLayer = this.gameObject.layer;
+			// Trigger?
+			if (HitTrigger(hitCollider, hitPoint, direction))
+			{
+				return;
+			}
 
-		private bool HitTrigger(Collider2D hitCollider, Vector2 point, int? directionX, int? directionY)
+			// Collision Info
+			_collisionInfo.collider = this.SelfCollider;
+			_collisionInfo.hitCollider = hitCollider;
+			_collisionInfo.position = hitPoint;
+
+			// Collision Direction
+			_collisionInfo.DirectionInfo = direction;
+
+			// Need Push Collision ?
+			if (!_currentDetectionHitColliders.Contains(hitCollider))
+			{
+				_physicsManager.PushCollision(_collisionInfo);
+				_currentDetectionHitColliders.Add(hitCollider);
+			}
+
+			switch (direction)
+			{
+				case CollisionDirection.Left:
+				case CollisionDirection.Right:
+					if (_movement.x != 0.0f)
+					{
+						if (Mathf.Abs(hitDistance - _shrinkWidth) < Mathf.Abs(_movement.x))
+						{
+							_movement.x = (hitDistance - _shrinkWidth) * direction.GetMagnitude();
+						}
+					}
+					break;
+				case CollisionDirection.Up:
+				case CollisionDirection.Down:
+					if (_movement.y != 0.0f)
+					{
+						if (Mathf.Abs(hitDistance - _shrinkWidth) < Mathf.Abs(_movement.y))
+						{
+							_movement.y = (hitDistance - _shrinkWidth) * direction.GetMagnitude();
+						}
+					}
+					break;
+			}
+		}
+
+		private bool HitTrigger(Collider2D hitCollider, Vector2 point, CollisionDirection direction)
 		{
 			// Trigger?
 			if (hitCollider.isTrigger || _colliderIsTrigger)
 			{
-				_triggerInfo.collider = this.SelfCollider;
+				_triggerInfo.collider = SelfCollider;
 				_triggerInfo.hitCollider = hitCollider;
 				_triggerInfo.position.x = point.x;
 				_triggerInfo.position.y = point.y;
-				if (directionY.HasValue)
-				{
-					if (directionY.Value == -1)
-					{
-						_triggerInfo.DirectionInfo = CollisionDirection.Down;
-					}
-					if (directionY.Value == 1)
-					{
-						_triggerInfo.DirectionInfo = CollisionDirection.Up;
-					}
-				}
-				if (directionX.HasValue)
-				{
-					if (directionX.Value == -1)
-					{
-						_triggerInfo.DirectionInfo = CollisionDirection.Left;
-					}
-					if (directionX.Value == 1)
-					{
-						_triggerInfo.DirectionInfo = CollisionDirection.Right;
-					}
-				}
+				_triggerInfo.DirectionInfo = direction;
+
 				if (!_currentDetectionHitTriggers.Contains(hitCollider))
 				{
 					_physicsManager.PushCollision(_triggerInfo);

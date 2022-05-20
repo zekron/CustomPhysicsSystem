@@ -3,14 +3,14 @@ using System.Collections;
 
 namespace CustomPhysics2D
 {
+	/// <summary>
+	/// 射线起始位置
+	/// </summary>
 	public struct RaycastOrigins
 	{
 		public Vector2 topLeft;
-
 		public Vector2 topRight;
-
 		public Vector2 bottomLeft;
-
 		public Vector2 bottomRight;
 
 		//public bool topLeftInCollider;
@@ -23,17 +23,19 @@ namespace CustomPhysics2D
 
 		public void Reset()
 		{
-			this.topLeft.x = 0.0f;
-			this.topLeft.y = 0.0f;
+			topLeft = topRight = bottomLeft = bottomRight = Vector2.zero;
 
-			this.topRight.x = 0.0f;
-			this.topRight.y = 0.0f;
+			//topLeft.x = 0.0f;
+			//topLeft.y = 0.0f;
 
-			this.bottomLeft.x = 0.0f;
-			this.bottomLeft.y = 0.0f;
+			//topRight.x = 0.0f;
+			//topRight.y = 0.0f;
 
-			this.topRight.x = 0.0f;
-			this.topRight.y = 0.0f;
+			//bottomLeft.x = 0.0f;
+			//bottomLeft.y = 0.0f;
+
+			//topRight.x = 0.0f;
+			//topRight.y = 0.0f;
 
 			//this.bottomLeftInCollider = false;
 			//this.bottomRightInCollider = false;

@@ -8,8 +8,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <ProjectGuid>{8773949A-B466-C561-D4F5-1939C60B6359}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -64,6 +63,7 @@
     <Compile Include="Assets\J2P\Scripts\QuadTree\PositionInQuadTree.cs" />
     <Compile Include="Assets\Test\Scripts\TestQuadTreeGenerator.cs" />
     <Compile Include="Assets\J2P\Scripts\Collision\JPlatform.cs" />
+    <Compile Include="Assets\J2P\Scripts\QuadTree\PositionInQuadTreeDepth.cs" />
     <Compile Include="Assets\J2P\Scripts\Collision\JRigidbody.cs" />
     <Compile Include="Assets\J2P\Scripts\Collision\RaycastOrigins.cs" />
     <Compile Include="Assets\J2P\Scripts\JPhysicsManager.cs" />
@@ -71,9 +71,8 @@
     <Compile Include="Assets\Test\Scripts\TestRayHit.cs" />
     <Compile Include="Assets\J2P\Scripts\Utilities\Extension.cs" />
     <Compile Include="Assets\J2P\Scripts\JPhysicsSetting.cs" />
-    <Compile Include="Assets\J2P\Scripts\Collision\Collidioninfo.cs" />
+    <Compile Include="Assets\J2P\Scripts\Collision\CollidionInfo.cs" />
     <Compile Include="Assets\J2P\Scripts\QuadTree\QuadTree.cs" />
-    <Compile Include="Assets\J2P\Scripts\QuadTree\PositionInQuadTreeDepth.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
