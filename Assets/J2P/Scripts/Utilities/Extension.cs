@@ -63,35 +63,35 @@ namespace CustomPhysics2D
 			return true;
 		}
 
-		public static CollisionDirection ToCollisionDirection(this Vector2 vector)
+		public static HitColliderDirection ToHitColliderDirection(this Vector2 vector)
 		{
-			if (vector == Vector2.left) return CollisionDirection.Left;
-			else if (vector == Vector2.right) return CollisionDirection.Right;
-			else if (vector == Vector2.up) return CollisionDirection.Up;
-			else if (vector == Vector2.down) return CollisionDirection.Down;
+			if (vector == Vector2.left) return HitColliderDirection.Left;
+			else if (vector == Vector2.right) return HitColliderDirection.Right;
+			else if (vector == Vector2.up) return HitColliderDirection.Up;
+			else if (vector == Vector2.down) return HitColliderDirection.Down;
 			else throw new Exception(string.Format("Wrong vector: {0}", vector));
 		}
-		public static Vector2 ToVector2(this CollisionDirection direction)
+		public static Vector2 ToVector2(this HitColliderDirection direction)
 		{
 			switch (direction)
 			{
-				case CollisionDirection.Left: return Vector2.left;
-				case CollisionDirection.Right: return Vector2.right;
-				case CollisionDirection.Up: return Vector2.up;
-				case CollisionDirection.Down: return Vector2.down;
+				case HitColliderDirection.Left: return Vector2.left;
+				case HitColliderDirection.Right: return Vector2.right;
+				case HitColliderDirection.Up: return Vector2.up;
+				case HitColliderDirection.Down: return Vector2.down;
 				default:
 					throw new Exception(string.Format("Wrong vector: {0}", direction));
 			}
 		}
-		public static int GetMagnitude(this CollisionDirection direction)
+		public static int GetMagnitude(this HitColliderDirection direction)
 		{
 			switch (direction)
 			{
-				case CollisionDirection.Left: 
-				case CollisionDirection.Down: 
+				case HitColliderDirection.Left: 
+				case HitColliderDirection.Down: 
 					return -1;
-				case CollisionDirection.Right:
-				case CollisionDirection.Up:
+				case HitColliderDirection.Right:
+				case HitColliderDirection.Up:
 					return 1;
 				default:
 					throw new Exception(string.Format("Wrong vector: {0}", direction));

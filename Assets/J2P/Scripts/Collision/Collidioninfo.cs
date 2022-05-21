@@ -5,9 +5,15 @@ namespace CustomPhysics2D
 {
 	public struct CollisionInfo : IEquatable<CollisionInfo>
 	{
-		internal CollisionDirection DirectionInfo;
+		/// <summary>
+		/// Self collider
+		/// </summary>
 		internal Collider2D collider;
+		/// <summary>
+		/// Other collider
+		/// </summary>
 		internal Collider2D hitCollider;
+		internal HitColliderDirection HitDirection;
 		internal Vector2 position;
 
 		public bool Equals(CollisionInfo obj)
@@ -22,7 +28,7 @@ namespace CustomPhysics2D
 
 		public void Reset()
 		{
-			DirectionInfo = CollisionDirection.None;
+			HitDirection = HitColliderDirection.None;
 			collider = null;
 			hitCollider = null;
 			position.x = 0.0f;
@@ -30,7 +36,7 @@ namespace CustomPhysics2D
 		}
 	}
 
-	public enum CollisionDirection
+	public enum HitColliderDirection
 	{
 		None = -1,
 
