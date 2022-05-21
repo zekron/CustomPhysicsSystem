@@ -33,6 +33,15 @@ namespace CustomPhysics2D
 			return rect;
 		}
 
+		/// <summary>
+		/// Raycast item's Rect with Ray.Rect in <paramref name="quadTree"/>
+		/// </summary>
+		/// <param name="quadTree"></param>
+		/// <param name="origin">Origin of ray</param>
+		/// <param name="direction">Direction of ray</param>
+		/// <param name="hitList">Hit list which stores item are casted</param>
+		/// <param name="distance">Distance of ray</param>
+		/// <param name="layMask">Layer in which can be casted</param>
 		public static void Raycast( QuadTree quadTree, Vector2 origin, Vector2 direction, ref JRaycastHitList hitList, float distance, int layMask )
 		{
 			var hitCount = 0;
@@ -64,7 +73,6 @@ namespace CustomPhysics2D
 		/// <summary>
 		/// 计算一条射线和AABB是否相交
 		/// </summary>
-		/// <returns></returns>
 		public static void CalculateRayHit( Collider2D collider, Vector2 origin, Vector2 dir, ref JRaycastHitList hitList, float distance, ref int hitCount )
 		{
 			if( RaycastHitExist( collider, hitList ) )

@@ -31,7 +31,7 @@ namespace CustomPhysics2D
 		/// When movement is zero, rayLength = _shringkWidth + _expandWidth
 		/// </summary>
 		protected float _minRayLength = 0.1f;
-		private Collider2D _collider2D;
+		protected Collider2D _collider2D;
 
 		protected int collisionMask;
 		protected float _horizontalRaySpace;
@@ -52,15 +52,10 @@ namespace CustomPhysics2D
 		private Rect _rect;
 
 		public Collider2D SelfCollider => _collider2D;
-
-		protected Bounds SelfBounds => SelfCollider.bounds;
-
-		public Vector2 Size => SelfBounds.size;
-
-		public Vector2 Center => SelfBounds.center;
-
+		protected Bounds SelfBounds => _collider2D.bounds;
+		public Vector2 Size => _collider2D.bounds.size;
+		public Vector2 Center => _collider2D.bounds.center;
 		public Rect ItemRect => _rect;
-
 		public PositionInQuadTree LastPosInQuadTree
 		{
 			get
@@ -72,7 +67,6 @@ namespace CustomPhysics2D
 				_lastPosInQuadTree = value;
 			}
 		}
-
 		public PositionInQuadTree CurrentPosInQuadTree
 		{
 			get
@@ -111,7 +105,7 @@ namespace CustomPhysics2D
 
 			Gizmos.color = Color.red;
 			_collider2D = GetComponent<Collider2D>();
-			Gizmos.DrawWireCube(Center, Size);
+			Gizmos.DrawWireCube(_rect.center, _rect.size);
 
 			UpdateRaycastOrigins();
 			Gizmos.color = Color.green;
