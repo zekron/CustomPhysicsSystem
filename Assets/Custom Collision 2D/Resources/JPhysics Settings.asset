@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a0e7298db64028409d63f2021a1d6cf, type: 3}
+  m_Script: {fileID: 11500000, guid: edf0c9ae820683045b6d51c6f7fb2b59, type: 3}
   m_Name: JPhysics Settings
   m_EditorClassIdentifier: 
-  _gravity: {x: 0, y: -100}
+  _gravity: {x: 0, y: -150}
   collisionLayerMasks:
   - layer: 0
     layerMask:
@@ -49,11 +49,11 @@ MonoBehaviour:
   - layer: 8
     layerMask:
       serializedVersion: 2
-      m_Bits: 769
+      m_Bits: 768
   - layer: 9
     layerMask:
       serializedVersion: 2
-      m_Bits: 513
+      m_Bits: 768
   - layer: 10
     layerMask:
       serializedVersion: 2

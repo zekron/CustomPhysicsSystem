@@ -17,7 +17,7 @@ namespace CustomPhysics2D
         {
             get;
         }
-        Collider2D SelfCollider
+        CustomCollider2D SelfCollider
         {
             get;
         }

@@ -12,7 +12,7 @@ namespace CustomPhysics2D
 		public LayerMask layerMask;
 	}
 
-	public class JPhysicsSetting : ScriptableObject
+	public class CustomPhysicsSetting : ScriptableObject
 	{
 		#region Gravity
 		public Vector2 gravity

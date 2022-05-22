@@ -38,22 +38,22 @@ namespace CustomPhysics2D.Test
 			}
 		}
 
-		private void OnCollisionBegin( CollisionInfo collisionInfo )
+		private void OnCollisionBegin( CollisionInfo2D collisionInfo )
 		{
 			Debug.Log( "CollisionEnter" );
 		}
 
-		private void OnCollisionEnd( CollisionInfo collisionInfo )
+		private void OnCollisionEnd( CollisionInfo2D collisionInfo )
 		{
 			Debug.Log( "CollisionExit" );
 		}
 
-		private void OnTriggerBegin( CollisionInfo collisionInfo )
+		private void OnTriggerBegin( CollisionInfo2D collisionInfo )
 		{
 			Debug.Log( "TriigerEnter" );
 		}
 
-		private void OnTriggerEnd( CollisionInfo collisionInfo )
+		private void OnTriggerEnd( CollisionInfo2D collisionInfo )
 		{
 			Debug.Log( "TriggerExit" );
 		}

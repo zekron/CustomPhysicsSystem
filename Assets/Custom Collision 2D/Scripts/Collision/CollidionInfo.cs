@@ -3,20 +3,20 @@ using UnityEngine;
 
 namespace CustomPhysics2D
 {
-	public struct CollisionInfo : IEquatable<CollisionInfo>
+	public struct CollisionInfo2D : IEquatable<CollisionInfo2D>
 	{
 		/// <summary>
 		/// Self collider
 		/// </summary>
-		internal Collider2D collider;
+		internal CustomCollider2D collider;
 		/// <summary>
 		/// Other collider
 		/// </summary>
-		internal Collider2D hitCollider;
+		internal CustomCollider2D hitCollider;
 		internal HitColliderDirection HitDirection;
 		internal Vector2 position;
 
-		public bool Equals(CollisionInfo obj)
+		public bool Equals(CollisionInfo2D obj)
 		{
 			return (collider == obj.collider) && (hitCollider == obj.hitCollider) || (collider == obj.hitCollider) && (hitCollider == obj.collider);
 		}

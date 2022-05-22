@@ -11,9 +11,9 @@ namespace CustomPhysics2D
 		/// </summary>
 		/// <param name="collider"></param>
 		/// <returns></returns>
-		public static JRigidbody Rigidbody(this Collider2D collider)
+		public static CustomRigidbody2D Rigidbody(this CustomCollider2D collider)
 		{
-			return JPhysicsManager.instance.GetRigidbody(collider);
+			return CustomPhysicsManager.instance.GetRigidbody(collider);
 		}
 
 		/// <summary>
@@ -71,6 +71,7 @@ namespace CustomPhysics2D
 			else if (vector == Vector2.down) return HitColliderDirection.Down;
 			else throw new Exception(string.Format("Wrong vector: {0}", vector));
 		}
+
 		public static Vector2 ToVector2(this HitColliderDirection direction)
 		{
 			switch (direction)
@@ -83,12 +84,13 @@ namespace CustomPhysics2D
 					throw new Exception(string.Format("Wrong vector: {0}", direction));
 			}
 		}
+
 		public static int GetMagnitude(this HitColliderDirection direction)
 		{
 			switch (direction)
 			{
-				case HitColliderDirection.Left: 
-				case HitColliderDirection.Down: 
+				case HitColliderDirection.Left:
+				case HitColliderDirection.Down:
 					return -1;
 				case HitColliderDirection.Right:
 				case HitColliderDirection.Up:
@@ -96,6 +98,27 @@ namespace CustomPhysics2D
 				default:
 					throw new Exception(string.Format("Wrong vector: {0}", direction));
 			}
+		}
+
+		public static Vector3 ToVector3(this Vector2 vector)
+		{
+			return new Vector3(vector.x, vector.y);
+		}
+
+		public static Vector2 ToVector2(this Vector3 vector)
+		{ 
+			return new Vector2(vector.x, vector.y);
+		}
+
+		public static CustomCollider2D ToCustomCollider2D(this Collider2D collider2D)
+		{
+			var custom = collider2D.GetComponent<CustomCollider2D>();
+			if(custom == null)
+			{
+				custom = collider2D.gameObject.AddComponent<CustomCollider2D>();
+				custom.Initialize(collider2D.offset, collider2D.bounds.size);
+			}
+			return custom;
 		}
 	}
 }

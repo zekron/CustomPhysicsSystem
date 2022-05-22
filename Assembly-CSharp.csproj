@@ -53,26 +53,10 @@
     <UnityVersion>2020.3.17f1c1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\J2P\Scripts\QuadTree\IQuadTreeItem.cs" />
-    <Compile Include="Assets\J2P\Scripts\QuadTree\QuadTreeGenerator.cs" />
     <Compile Include="Assets\Test\Scripts\TestPhysics.cs" />
-    <Compile Include="Assets\J2P\Scripts\Collision\JCollisionController.cs" />
-    <Compile Include="Assets\J2P\Scripts\Utilities\JRaycastHit.cs" />
     <Compile Include="Assets\Test\Scripts\TestRigidbodyMove.cs" />
-    <Compile Include="Assets\J2P\Scripts\Utilities\JPhysics.cs" />
-    <Compile Include="Assets\J2P\Scripts\QuadTree\PositionInQuadTree.cs" />
     <Compile Include="Assets\Test\Scripts\TestQuadTreeGenerator.cs" />
-    <Compile Include="Assets\J2P\Scripts\Collision\JPlatform.cs" />
-    <Compile Include="Assets\J2P\Scripts\QuadTree\PositionInQuadTreeDepth.cs" />
-    <Compile Include="Assets\J2P\Scripts\Collision\JRigidbody.cs" />
-    <Compile Include="Assets\J2P\Scripts\Collision\RaycastOrigins.cs" />
-    <Compile Include="Assets\J2P\Scripts\JPhysicsManager.cs" />
-    <Compile Include="Assets\J2P\Scripts\QuadTree\QuadTreeNode.cs" />
     <Compile Include="Assets\Test\Scripts\TestRayHit.cs" />
-    <Compile Include="Assets\J2P\Scripts\Utilities\Extension.cs" />
-    <Compile Include="Assets\J2P\Scripts\JPhysicsSetting.cs" />
-    <Compile Include="Assets\J2P\Scripts\Collision\CollidionInfo.cs" />
-    <Compile Include="Assets\J2P\Scripts\QuadTree\QuadTree.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -683,6 +667,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="CustomCollistionSystem2D.csproj">
+      <Project>{5730F023-F758-38E5-B860-99A340BB57F6}</Project>
+      <Name>CustomCollistionSystem2D</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

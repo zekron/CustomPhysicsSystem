@@ -4,23 +4,23 @@ using System.Collections.Generic;
 
 namespace CustomPhysics2D
 {
-	public class JPhysicsManager : MonoBehaviour
+	public class CustomPhysicsManager : MonoBehaviour
 	{
-		private static JPhysicsManager _instance = null;
+		private static CustomPhysicsManager _instance = null;
 		public static bool useUnityRayCast = true;
 
-		public static JPhysicsManager instance
+		public static CustomPhysicsManager instance
 		{
 			get
 			{
 				if (_instance == null && Application.isPlaying)
 				{
-					_instance = FindObjectOfType<JPhysicsManager>();
+					_instance = FindObjectOfType<CustomPhysicsManager>();
 
 					if (_instance == null)
 					{
 						var obj = new GameObject("Physics Manager");
-						_instance = obj.AddComponent<JPhysicsManager>();
+						_instance = obj.AddComponent<CustomPhysicsManager>();
 					}
 					//DontDestroyOnLoad( obj );
 				}
@@ -43,42 +43,44 @@ namespace CustomPhysics2D
 
 		private WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
 		private QuadTree _quadTree;
+		private bool needUpdateCollision = false;
 
 		#region Datas
-		private HashSet<CollisionInfo> _lastFrameHitColliders = new HashSet<CollisionInfo>();
-		private HashSet<CollisionInfo> _lastFrameHitRigidbodies = new HashSet<CollisionInfo>();
-		private HashSet<CollisionInfo> _currentFrameHitColliders = new HashSet<CollisionInfo>();
-		private HashSet<CollisionInfo> _currentFrameHitRigidbodies = new HashSet<CollisionInfo>();
-		private HashSet<CollisionInfo> _toBeRemovedCollisions = new HashSet<CollisionInfo>();
-		private Dictionary<Collider2D, JRigidbody> _rigidbodies = new Dictionary<Collider2D, JRigidbody>();
-		private Dictionary<Collider2D, JPlatform> _platforms = new Dictionary<Collider2D, JPlatform>();
+		private HashSet<CollisionInfo2D> _lastFrameHitColliders = new HashSet<CollisionInfo2D>();
+		private HashSet<CollisionInfo2D> _lastFrameHitRigidbodies = new HashSet<CollisionInfo2D>();
+		private HashSet<CollisionInfo2D> _currentFrameHitColliders = new HashSet<CollisionInfo2D>();
+		private HashSet<CollisionInfo2D> _currentFrameHitRigidbodies = new HashSet<CollisionInfo2D>();
+		private HashSet<CollisionInfo2D> _toBeRemovedCollisions = new HashSet<CollisionInfo2D>();
+		private Dictionary<CustomCollider2D, CustomRigidbody2D> _rigidbodies = new Dictionary<CustomCollider2D, CustomRigidbody2D>();
+		private Dictionary<CustomCollider2D, CustomPlatform2D> _platforms = new Dictionary<CustomCollider2D, CustomPlatform2D>();
 		#endregion
 
 		public QuadTree quadTree => _quadTree;
 
-		public JPhysicsSetting setting
+		public CustomPhysicsSetting setting
 		{
 			get; private set;
 		}
 
 		private void Awake()
 		{
-			setting = Instantiate(Resources.Load<JPhysicsSetting>("JPhysics Settings"));
-			StartCoroutine(UpdateCollisions());
+			setting = Instantiate(Resources.Load<CustomPhysicsSetting>("JPhysics Settings"));
 
 			useUnityRayCast = false;
+			needUpdateCollision = true;
+			StartCoroutine(UpdateCollisions());
 		}
 
 		private void Start()
 		{
 			if (useUnityRayCast == false)
 			{
-				foreach (JRigidbody rigidbody in _rigidbodies.Values)
+				foreach (CustomRigidbody2D rigidbody in _rigidbodies.Values)
 				{
 					rigidbody.InitializePosInQuadTree(_quadTree);
 					_quadTree.UpdateItem(rigidbody);
 				}
-				foreach (JPlatform platform in _platforms.Values)
+				foreach (CustomPlatform2D platform in _platforms.Values)
 				{
 					platform.InitializePosInQuadTree(_quadTree);
 					_quadTree.UpdateItem(platform);
@@ -94,13 +96,9 @@ namespace CustomPhysics2D
 		private void FixedUpdate()
 		{
 			// Rigidbodies
-			foreach (var pair in _rigidbodies)
+			foreach (var rigidbody in _rigidbodies.Values)
 			{
-				var rigidbody = pair.Value;
-				if (!rigidbody.isActiveAndEnabled || !rigidbody.gameObject.activeInHierarchy)
-				{
-					continue;
-				}
+				if (!rigidbody.isActiveAndEnabled || !rigidbody.gameObject.activeInHierarchy) continue;
 
 				rigidbody.Simulate(Time.fixedDeltaTime);
 				if (useUnityRayCast == false)
@@ -112,12 +110,12 @@ namespace CustomPhysics2D
 
 		private void OnDestroy()
 		{
-			this.StopCoroutine(UpdateCollisions());
+			needUpdateCollision = false;
 		}
 
-		public void PushCollision(CollisionInfo collisionInfo)
+		public void PushCollision(CollisionInfo2D collisionInfo)
 		{
-			if (this.GetRigidbody(collisionInfo.collider) != null && this.GetRigidbody(collisionInfo.hitCollider) != null)
+			if (GetRigidbody(collisionInfo.collider) != null && GetRigidbody(collisionInfo.hitCollider) != null)
 			{
 				if (!_currentFrameHitRigidbodies.Contains(collisionInfo))
 				{
@@ -132,7 +130,7 @@ namespace CustomPhysics2D
 
 		private IEnumerator UpdateCollisions()
 		{
-			while (true)
+			while (needUpdateCollision)
 			{
 				yield return _waitForFixedUpdate;
 
@@ -152,7 +150,7 @@ namespace CustomPhysics2D
 			{
 				if (!_lastFrameHitColliders.Contains(currentFrameCollision))
 				{
-					this.ContactEvent(currentFrameCollision, true);
+					ContactEvent(currentFrameCollision, true);
 					_lastFrameHitColliders.Add(currentFrameCollision);
 				}
 			}
@@ -162,7 +160,7 @@ namespace CustomPhysics2D
 			{
 				if (!_lastFrameHitRigidbodies.Contains(collision))
 				{
-					this.ContactEvent(collision, true);
+					ContactEvent(collision, true);
 					_lastFrameHitRigidbodies.Add(collision);
 				}
 			}
@@ -202,34 +200,31 @@ namespace CustomPhysics2D
 			_toBeRemovedCollisions.Clear();
 		}
 
-		private void ContactEvent(CollisionInfo collisionInfo, bool isBeginEvent)
+		private void ContactEvent(CollisionInfo2D collisionInfo, bool isBeginEvent)
 		{
-			if (collisionInfo.hitCollider == null || collisionInfo.collider == null)
-			{
-				return;
-			}
+			if (collisionInfo.hitCollider == null || collisionInfo.collider == null) return;
 
-			if (collisionInfo.collider.isTrigger || collisionInfo.hitCollider.isTrigger)
+			if (collisionInfo.collider.IsTrigger || collisionInfo.hitCollider.IsTrigger)
 			{
 				// Trigger Event
-				this.SendCollisionMessage(collisionInfo, isBeginEvent, true);
+				SendCollisionMessage(collisionInfo, isBeginEvent, true);
 			}
 			else
 			{
-				// Collison Event
-				this.SendCollisionMessage(collisionInfo, isBeginEvent, false);
+				// Collision Event
+				SendCollisionMessage(collisionInfo, isBeginEvent, false);
 			}
 		}
 
-		private void SendCollisionMessage(CollisionInfo collisionInfo, bool isBeginEvent, bool isTriggerEvent)
+		private void SendCollisionMessage(CollisionInfo2D collisionInfo, bool isBeginEvent, bool isTriggerEvent)
 		{
 			var rigidbody = GetRigidbody(collisionInfo.collider);
 			var hitCollider = collisionInfo.hitCollider;
-			var hitRigidbody = this.GetRigidbody(collisionInfo.hitCollider);
+			var hitRigidbody = GetRigidbody(collisionInfo.hitCollider);
 
 			if (isBeginEvent)
 			{
-				if (rigidbody != null)
+				if (rigidbody != null)  //本方刚体
 				{
 					if (isTriggerEvent)
 					{
@@ -242,7 +237,7 @@ namespace CustomPhysics2D
 				}
 
 				// Switch collider & hitCollider
-				if (hitRigidbody != null)
+				if (hitRigidbody != null)   //对方刚体
 				{
 					collisionInfo.hitCollider = collisionInfo.collider;
 					collisionInfo.collider = hitCollider;
@@ -258,6 +253,11 @@ namespace CustomPhysics2D
 				}
 				else
 				{
+					var controller = hitCollider.GetComponent<CustomCollisionController>();
+					if (controller is CustomPlatform2D)
+					{
+						Debug.Log("Hit platform");
+					}
 					//collisionInfo.hitCollider.gameObject.SendMessage( isTriggerEvent ? _triggerBeginEventName : _collisionBeginEventName,
 					//	collisionInfo, SendMessageOptions.DontRequireReceiver );
 				}
@@ -296,7 +296,7 @@ namespace CustomPhysics2D
 			}
 		}
 
-		public void PushRigidbody(JRigidbody rigidbody)
+		public void PushRigidbody(CustomRigidbody2D rigidbody)
 		{
 			if (rigidbody == null) return;
 
@@ -314,7 +314,7 @@ namespace CustomPhysics2D
 			_quadTree.UpdateItem(rigidbody);
 		}
 
-		public void RemoveRigidbody(JRigidbody rigidbody)
+		public void RemoveRigidbody(CustomRigidbody2D rigidbody)
 		{
 			if (_rigidbodies == null || _rigidbodies.Count == 0) return;
 			if (rigidbody == null) return;
@@ -322,16 +322,16 @@ namespace CustomPhysics2D
 			_rigidbodies.Remove(rigidbody.SelfCollider);
 		}
 
-		public JRigidbody GetRigidbody(Collider2D collider)
+		public CustomRigidbody2D GetRigidbody(CustomCollider2D collider)
 		{
 			if (collider == null) return null;
 
-			JRigidbody rigidbody = null;
+			CustomRigidbody2D rigidbody = null;
 			_rigidbodies.TryGetValue(collider, out rigidbody);
 			return rigidbody;
 		}
 
-		public void PushPlatform(JPlatform platform)
+		public void PushPlatform(CustomPlatform2D platform)
 		{
 			if (platform == null) return;
 
@@ -345,7 +345,7 @@ namespace CustomPhysics2D
 			_quadTree.UpdateItem(platform);
 		}
 
-		public void RemovePlatform(JPlatform platform)
+		public void RemovePlatform(CustomPlatform2D platform)
 		{
 			if (_platforms == null || _platforms.Count == 0) return;
 			if (platform == null) return;

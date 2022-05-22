@@ -28,7 +28,7 @@ namespace CustomPhysics2D
         //Support rectangle range
         public QuadTree(Rect worldRect, int maxDepth)
         {
-            this.NeedDebug = false;
+            NeedDebug = false;
             _worldRect = worldRect;
             _maxDepth = maxDepth;
             _gridSizes = new Vector2[maxDepth + 1];
@@ -45,7 +45,8 @@ namespace CustomPhysics2D
         {
             return new QuadTree(worldRect, maxDepth);
         }
-        public int GetDepth(Vector2 size)
+
+        internal int GetDepth(Vector2 size)
         {
             for (int i = _gridSizes.Length - 1; i >= 0; i--)
             {
@@ -66,7 +67,7 @@ namespace CustomPhysics2D
         /// <param name="center">物体的中心坐标</param>
         /// <param name="size">物体的大小(Rect.width, Rect.height)</param>
         /// <param name="posInfo">需要更新的位置信息</param>
-        public void GetPosInfo(Vector2 center, Vector2 size, ref PositionInQuadTree posInfo)
+        internal void GetPosInfo(Vector2 center, Vector2 size, ref PositionInQuadTree posInfo)
         {
             posInfo.Reset();
 
@@ -88,7 +89,11 @@ namespace CustomPhysics2D
             }
         }
 
-        public void UpdateItem(IQuadTreeItem item)
+        /// <summary>
+        /// 更新 <paramref name="item"/> 在四叉树中的位置
+        /// </summary>
+        /// <param name="item"></param>
+        internal void UpdateItem(IQuadTreeItem item)
         {
             var newPosInfo = item.CurrentPosInQuadTree;
             GetPosInfo(item.Center, item.Size, ref newPosInfo);
@@ -100,7 +105,7 @@ namespace CustomPhysics2D
                 //从上一帧位置信息中移除当前物体
                 _root.RemoveItemInChildren(item, lastPosInfo, lastPosInfo.storeDepth - 1);
             }
-            if (this.NeedDebug)
+            if (NeedDebug)
             {
                 Debug.LogFormat("Remove item in:\n{0}", lastPosInfo);
                 Debug.LogFormat("Add item in:\n{0}", newPosInfo);
@@ -122,7 +127,7 @@ namespace CustomPhysics2D
         /// <summary>
         /// Get items that might intersect with the rayRect
         /// </summary>
-        public List<IQuadTreeItem> GetItems(Rect rayRect)
+        internal List<IQuadTreeItem> GetItems(Rect rayRect)
         {
             _cacheItemsFound.Clear();
             _traverseNodeQueue.Clear();

@@ -6,12 +6,12 @@ using UnityEditorInternal;
 
 namespace CustomPhysics2D
 {
-	[CustomEditor(typeof (JPhysicsSetting))]
+	[CustomEditor(typeof (CustomPhysicsSetting))]
     public class JPhysicsSettingInspector : Editor
     {
 		private static string _settingsPath = "Assets/J2P/Resources/JPhysics Settings.asset";
 
-		private JPhysicsSetting _target;
+		private CustomPhysicsSetting _target;
 
 		private SerializedProperty _gravity;
 
@@ -19,7 +19,7 @@ namespace CustomPhysics2D
 
 		void OnEnable()
 		{
-			_target = this.target as JPhysicsSetting;
+			_target = this.target as CustomPhysicsSetting;
 			_gravity = serializedObject.FindProperty( "_gravity" );
 
 			this.InitCollisionLayerMasks();
@@ -134,10 +134,10 @@ namespace CustomPhysics2D
 		[MenuItem( "J2P/Physics Settings", false, 1 )]
 		static void EditPhyscisSettings()
 		{
-			var settings = AssetDatabase.LoadAssetAtPath<JPhysicsSetting>( _settingsPath );
+			var settings = AssetDatabase.LoadAssetAtPath<CustomPhysicsSetting>( _settingsPath );
 			if( settings == null )
 			{
-				settings = ScriptableObject.CreateInstance<JPhysicsSetting>();
+				settings = ScriptableObject.CreateInstance<CustomPhysicsSetting>();
 				AssetDatabase.CreateAsset( settings, _settingsPath );
 				AssetDatabase.SaveAssets();
 

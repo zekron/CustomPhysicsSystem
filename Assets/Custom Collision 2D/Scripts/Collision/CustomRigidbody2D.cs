@@ -6,7 +6,7 @@ using UnityEngine.Profiling;
 
 namespace CustomPhysics2D
 {
-	public class JRigidbody : JCollisionController
+	public class CustomRigidbody2D : CustomCollisionController
 	{
 		public enum CollisionDetectionMode
 		{
@@ -19,13 +19,13 @@ namespace CustomPhysics2D
 		[SerializeField] private CollisionDetectionMode collisionDetectionMode;
 
 		private Vector2 _velocity;
-		private CollisionInfo _collisionInfo;
-		private CollisionInfo _triggerInfo;
+		private CollisionInfo2D _collisionInfo;
+		private CollisionInfo2D _triggerInfo;
 		private bool _colliderIsTrigger = false;
-		private JPhysicsManager _physicsManager;
+		private CustomPhysicsManager _physicsManager;
 		private Vector3 _movement = Vector3.zero;
-		private HashSet<Collider2D> _currentDetectionHitTriggers = new HashSet<Collider2D>();
-		private HashSet<Collider2D> _currentDetectionHitColliders = new HashSet<Collider2D>();
+		private HashSet<CustomCollider2D> _currentDetectionHitTriggers = new HashSet<CustomCollider2D>();
+		private HashSet<CustomCollider2D> _currentDetectionHitColliders = new HashSet<CustomCollider2D>();
 		private Vector2 _raycastDirection;
 
 		#region Properties
@@ -40,44 +40,12 @@ namespace CustomPhysics2D
 				_velocity = value;
 			}
 		}
-
-		public float velocityX
-		{
-			get
-			{
-				return _velocity.x;
-			}
-			set
-			{
-				_velocity.x = value;
-			}
-		}
-
-		public float velocityY
-		{
-			get
-			{
-				return _velocity.y;
-			}
-			set
-			{
-				_velocity.y = value;
-			}
-		}
-
-		public CollisionInfo collisionInfo
-		{
-			get
-			{
-				return _collisionInfo;
-			}
-		}
 		#endregion
 
 		protected override void Awake()
 		{
 			base.Awake();
-			_physicsManager = JPhysicsManager.instance;
+			_physicsManager = CustomPhysicsManager.instance;
 			_physicsManager.PushRigidbody(this);
 			this.collisionMask = _physicsManager.setting.GetCollisionMask(this.gameObject.layer);
 
@@ -128,7 +96,7 @@ namespace CustomPhysics2D
 
 		private void ResetStatesBeforeCollision()
 		{
-			_colliderIsTrigger = _collider2D.isTrigger;
+			_colliderIsTrigger = _collider2D.IsTrigger;
 			_collisionInfo.Reset();
 			_triggerInfo.Reset();
 			_raycastOrigins.Reset();
@@ -217,7 +185,7 @@ namespace CustomPhysics2D
 
 		private void PrepareCollisionInfo()
 		{
-			this.UpdateRaycastOrigins();
+			UpdateRaycastOrigins();
 		}
 
 		private void HorizontalCollisionDetect()
@@ -249,22 +217,22 @@ namespace CustomPhysics2D
 					_raycastDirection = directionX;
 
 					Debug.DrawLine(rayOrigin, rayOrigin + _raycastDirection * rayLength, Color.red);
-					if (JPhysicsManager.useUnityRayCast)
+					if (CustomPhysicsManager.useUnityRayCast)
 					{
 						var hitCount = Physics2D.RaycastNonAlloc(rayOrigin, _raycastDirection, _raycastHit2D, rayLength, this.collisionMask);
 						for (int j = 0; j < hitCount; j++)
 						{
 							var hit = _raycastHit2D[j];
-							if (_ignoredColliders.Contains(hit.collider)) continue;
+							if (_ignoredColliders.Contains(hit.collider.ToCustomCollider2D())) continue;
 
-							HandleHitResult(hit.collider, hit.point, hitDirection);
+							HandleHitResult(hit.collider.ToCustomCollider2D(), hit.point, hitDirection);
 							ReviseMovement(hit.distance, hitDirection);
 						}
 					}
 					else
 					{
 						_jraycastHitList.Clear();
-						JPhysics.Raycast(JPhysicsManager.instance.quadTree, rayOrigin, _raycastDirection, ref _jraycastHitList, rayLength, this.collisionMask);
+						CustomPhysics2D.Raycast(CustomPhysicsManager.instance.quadTree, rayOrigin, _raycastDirection, ref _jraycastHitList, rayLength, this.collisionMask);
 						for (int j = 0; j < _jraycastHitList.count; j++)
 						{
 							var hit = _jraycastHitList[j];
@@ -310,23 +278,23 @@ namespace CustomPhysics2D
 					_raycastDirection = directionY;
 
 					Debug.DrawLine(rayOrigin, rayOrigin + _raycastDirection * rayLength, Color.red);
-					if (JPhysicsManager.useUnityRayCast)
+					if (CustomPhysicsManager.useUnityRayCast)
 					{
 						var hitCount = Physics2D.RaycastNonAlloc(rayOrigin, _raycastDirection, _raycastHit2D, rayLength, collisionMask);
 						for (int j = 0; j < hitCount; j++)
 						{
 							var hit = _raycastHit2D[j];
 							// Ignored Collider?
-							if (_ignoredColliders.Contains(hit.collider)) continue;
+							if (_ignoredColliders.Contains(hit.collider.ToCustomCollider2D())) continue;
 
-							HandleHitResult(hit.collider, hit.point, hitDirection);
+							HandleHitResult(hit.collider.ToCustomCollider2D(), hit.point, hitDirection);
 							ReviseMovement(hit.distance, hitDirection);
 						}
 					}
 					else
 					{
 						_jraycastHitList.Clear();
-						JPhysics.Raycast(JPhysicsManager.instance.quadTree, rayOrigin, _raycastDirection, ref _jraycastHitList, rayLength, collisionMask);
+						CustomPhysics2D.Raycast(CustomPhysicsManager.instance.quadTree, rayOrigin, _raycastDirection, ref _jraycastHitList, rayLength, collisionMask);
 						for (int j = 0; j < _jraycastHitList.count; j++)
 						{
 							var hit = _jraycastHitList[j];
@@ -342,14 +310,19 @@ namespace CustomPhysics2D
 			}
 		}
 
-		private void HandleHitResult(Collider2D hitCollider, Vector2 hitPoint, HitColliderDirection hitDirection)
+		private void HandleHitResult(CustomCollider2D hitCollider, Vector2 hitPoint, HitColliderDirection hitDirection)
 		{
-			if (hitCollider.isTrigger || _colliderIsTrigger)
+			if (hitCollider.IsTrigger || _colliderIsTrigger)
 				HitTrigger(hitCollider, hitPoint, hitDirection);
 			else
 				HitCollider(hitCollider, hitPoint, hitDirection);
 		}
 
+		/// <summary>
+		/// 修正移动速度，防止速度过快穿过碰撞体
+		/// </summary>
+		/// <param name="hitDistance"></param>
+		/// <param name="hitDirection"></param>
 		private void ReviseMovement(float hitDistance, HitColliderDirection hitDirection)
 		{
 			switch (hitDirection)
@@ -377,7 +350,7 @@ namespace CustomPhysics2D
 			}
 		}
 
-		private void HitCollider(Collider2D hitCollider, Vector2 hitPoint, HitColliderDirection hitDirection)
+		private void HitCollider(CustomCollider2D hitCollider, Vector2 hitPoint, HitColliderDirection hitDirection)
 		{
 			// Collision Info
 			_collisionInfo.collider = _collider2D;
@@ -395,7 +368,7 @@ namespace CustomPhysics2D
 			}
 		}
 
-		private void HitTrigger(Collider2D hitCollider, Vector2 point, HitColliderDirection direction)
+		private void HitTrigger(CustomCollider2D hitCollider, Vector2 point, HitColliderDirection direction)
 		{
 			_triggerInfo.collider = _collider2D;
 			_triggerInfo.hitCollider = hitCollider;

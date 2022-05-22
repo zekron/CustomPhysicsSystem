@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace CustomPhysics2D
 {
-	public class JPlatform : JCollisionController
+	public class CustomPlatform2D : CustomCollisionController
 	{
 		protected override void Awake()
 		{
@@ -12,16 +12,16 @@ namespace CustomPhysics2D
 
 		private void OnEnable()
 		{
-			JPhysicsManager.instance.PushPlatform(this);
+			CustomPhysicsManager.instance.PushPlatform(this);
 			UpdateRect();
 		}
 		private void OnDisable()
 		{
-			JPhysicsManager.instance.RemovePlatform(this);
+			CustomPhysicsManager.instance.RemovePlatform(this);
 		}
 		private void OnDestroy()
 		{
-			JPhysicsManager.instance.RemovePlatform(this);
+			CustomPhysicsManager.instance.RemovePlatform(this);
 		}
 	}
 }

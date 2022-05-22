@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 
 namespace CustomPhysics2D
 {
-	public delegate void CollisionEvent(CollisionInfo collisionInfo);
+	public delegate void CollisionEvent(CollisionInfo2D collisionInfo);
 
-	public class JCollisionController : MonoBehaviour, IQuadTreeItem
+	public class CustomCollisionController : MonoBehaviour, IQuadTreeItem
 	{
 		protected const int MAX_HIT_COLLIDER_COUNT = 20;
 
@@ -31,7 +31,7 @@ namespace CustomPhysics2D
 		/// When movement is zero, rayLength = _shringkWidth + _expandWidth
 		/// </summary>
 		protected float _minRayLength = 0.1f;
-		protected Collider2D _collider2D;
+		protected CustomCollider2D _collider2D;
 
 		protected int collisionMask;
 		protected float _horizontalRaySpace;
@@ -40,21 +40,21 @@ namespace CustomPhysics2D
 		/// <summary>
 		/// Colliders that won't collide with this collider
 		/// </summary>
-		protected HashSet<Collider2D> _ignoredColliders = new HashSet<Collider2D>();
+		protected HashSet<CustomCollider2D> _ignoredColliders = new HashSet<CustomCollider2D>();
 		protected RaycastOrigins _raycastOrigins = new RaycastOrigins();
 
 		protected RaycastHit2D[] _raycastHit2D;
-		protected JRaycastHitList _jraycastHitList;
+		protected CustomRaycastHitList _jraycastHitList;
 
 		private PositionInQuadTree _lastPosInQuadTree;
 		private PositionInQuadTree _currentPosInQuadTree;
 
 		private Rect _rect;
 
-		public Collider2D SelfCollider => _collider2D;
-		protected Bounds SelfBounds => _collider2D.bounds;
-		public Vector2 Size => _collider2D.bounds.size;
-		public Vector2 Center => _collider2D.bounds.center;
+		public CustomCollider2D SelfCollider => _collider2D;
+		protected Bounds SelfBounds => _collider2D.SelfBounds;
+		public Vector2 Size => _collider2D.SelfBounds.size;
+		public Vector2 Center => _collider2D.SelfBounds.center;
 		public Rect ItemRect => _rect;
 		public PositionInQuadTree LastPosInQuadTree
 		{
@@ -81,13 +81,13 @@ namespace CustomPhysics2D
 
 		protected virtual void Awake()
 		{
-			_collider2D = GetComponent<Collider2D>();
+			_collider2D = GetComponent<CustomCollider2D>();
 
 			Vector2 rectMin = SelfBounds.min;
 			_rect = new Rect(rectMin, SelfBounds.size);
 
 			_raycastHit2D = new RaycastHit2D[MAX_HIT_COLLIDER_COUNT];
-			_jraycastHitList = new JRaycastHitList(MAX_HIT_COLLIDER_COUNT);
+			_jraycastHitList = new CustomRaycastHitList(MAX_HIT_COLLIDER_COUNT);
 			_transform = transform;
 		}
 
@@ -104,7 +104,7 @@ namespace CustomPhysics2D
 			if (!showDebugGizoms) return;
 
 			Gizmos.color = Color.red;
-			_collider2D = GetComponent<Collider2D>();
+			_collider2D = GetComponent<CustomCollider2D>();
 			Gizmos.DrawWireCube(_rect.center, _rect.size);
 
 			UpdateRaycastOrigins();

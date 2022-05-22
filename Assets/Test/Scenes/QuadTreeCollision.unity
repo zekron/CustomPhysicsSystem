@@ -137,6 +137,7 @@ GameObject:
   - component: {fileID: 88741966}
   - component: {fileID: 88741965}
   - component: {fileID: 88741964}
+  - component: {fileID: 88741969}
   m_Layer: 0
   m_Name: Item (5)
   m_TagString: Untagged
@@ -197,11 +198,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transform: {fileID: 0}
   showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
+  _shrinkWidth: 0.1
+  _minRayLength: 0.1
+  _collider2D: {fileID: 0}
+  collisionMask: 0
+  _horizontalRaySpace: 0
+  _verticalRaySpace: 0
+  _rect:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
   gravityScale: 0
   collisionDetectionMode: 0
+  _velocity: {x: 0, y: 0}
+  _colliderIsTrigger: 0
+  _physicsManager: {fileID: 0}
+  _movement: {x: 0, y: 0, z: 0}
+  _raycastDirection: {x: 0, y: 0}
 --- !u!212 &88741967
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -267,6 +285,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &88741969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 88741963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f712e0715f57c724d96816de37e8f8e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTrigger: 0
+  offset: {x: 0, y: 0}
+  size: {x: 1, y: 0.65}
 --- !u!1 &126736581
 GameObject:
   m_ObjectHideFlags: 0
@@ -279,6 +312,7 @@ GameObject:
   - component: {fileID: 126736585}
   - component: {fileID: 126736584}
   - component: {fileID: 126736583}
+  - component: {fileID: 126736586}
   m_Layer: 0
   m_Name: Right (1)
   m_TagString: Untagged
@@ -293,9 +327,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 126736581}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 19.9, y: 0.45, z: 0}
-  m_LocalScale: {x: 1.3979316, y: 28.2, z: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 20, y: 5, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1998625829}
   m_RootOrder: 4
@@ -312,9 +346,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e6a71b2a4ac2a240a74f0d708e5a3f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transform: {fileID: 0}
   showDebugGizoms: 0
   horizontalRayCount: 4
   verticalRayCount: 4
+  _shrinkWidth: 0.1
+  _minRayLength: 0.1
+  _collider2D: {fileID: 0}
+  collisionMask: 0
+  _horizontalRaySpace: 0
+  _verticalRaySpace: 0
+  _rect:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
 --- !u!61 &126736584
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -392,6 +438,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &126736586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126736581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f712e0715f57c724d96816de37e8f8e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTrigger: 0
+  offset: {x: 0, y: 0}
+  size: {x: 1, y: 0.65}
 --- !u!1 &138953749
 GameObject:
   m_ObjectHideFlags: 0
@@ -404,6 +465,7 @@ GameObject:
   - component: {fileID: 138953753}
   - component: {fileID: 138953752}
   - component: {fileID: 138953751}
+  - component: {fileID: 138953754}
   m_Layer: 0
   m_Name: Right
   m_TagString: Untagged
@@ -437,9 +499,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e6a71b2a4ac2a240a74f0d708e5a3f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transform: {fileID: 0}
   showDebugGizoms: 0
   horizontalRayCount: 4
   verticalRayCount: 4
+  _shrinkWidth: 0.1
+  _minRayLength: 0.1
+  _collider2D: {fileID: 0}
+  collisionMask: 0
+  _horizontalRaySpace: 0
+  _verticalRaySpace: 0
+  _rect:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
 --- !u!61 &138953752
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -517,6 +591,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &138953754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138953749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f712e0715f57c724d96816de37e8f8e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTrigger: 0
+  offset: {x: 0, y: 0}
+  size: {x: 1, y: 0.65}
 --- !u!1 &361758936
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,6 +619,7 @@ GameObject:
   - component: {fileID: 361758939}
   - component: {fileID: 361758938}
   - component: {fileID: 361758937}
+  - component: {fileID: 361758942}
   m_Layer: 0
   m_Name: Item (4)
   m_TagString: Untagged
@@ -590,11 +680,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transform: {fileID: 0}
   showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
+  _shrinkWidth: 0.1
+  _minRayLength: 0.1
+  _collider2D: {fileID: 0}
+  collisionMask: 0
+  _horizontalRaySpace: 0
+  _verticalRaySpace: 0
+  _rect:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
   gravityScale: 0
   collisionDetectionMode: 0
+  _velocity: {x: 0, y: 0}
+  _colliderIsTrigger: 0
+  _physicsManager: {fileID: 0}
+  _movement: {x: 0, y: 0, z: 0}
+  _raycastDirection: {x: 0, y: 0}
 --- !u!212 &361758940
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -660,6 +767,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &361758942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 361758936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f712e0715f57c724d96816de37e8f8e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTrigger: 0
+  offset: {x: 0, y: 0}
+  size: {x: 1, y: 0.65}
 --- !u!1 &437751203
 GameObject:
   m_ObjectHideFlags: 0
@@ -719,6 +841,7 @@ GameObject:
   - component: {fileID: 595257281}
   - component: {fileID: 595257280}
   - component: {fileID: 595257279}
+  - component: {fileID: 595257284}
   m_Layer: 0
   m_Name: Item (7)
   m_TagString: Untagged
@@ -779,11 +902,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transform: {fileID: 0}
   showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
+  _shrinkWidth: 0.1
+  _minRayLength: 0.1
+  _collider2D: {fileID: 0}
+  collisionMask: 0
+  _horizontalRaySpace: 0
+  _verticalRaySpace: 0
+  _rect:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
   gravityScale: 0
   collisionDetectionMode: 0
+  _velocity: {x: 0, y: 0}
+  _colliderIsTrigger: 0
+  _physicsManager: {fileID: 0}
+  _movement: {x: 0, y: 0, z: 0}
+  _raycastDirection: {x: 0, y: 0}
 --- !u!212 &595257282
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -849,6 +989,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &595257284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 595257278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f712e0715f57c724d96816de37e8f8e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTrigger: 0
+  offset: {x: 0, y: 0}
+  size: {x: 1, y: 0.65}
 --- !u!1 &788905709
 GameObject:
   m_ObjectHideFlags: 0
@@ -861,6 +1016,7 @@ GameObject:
   - component: {fileID: 788905712}
   - component: {fileID: 788905711}
   - component: {fileID: 788905710}
+  - component: {fileID: 788905714}
   m_Layer: 0
   m_Name: Down
   m_TagString: Untagged
@@ -880,9 +1036,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e6a71b2a4ac2a240a74f0d708e5a3f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transform: {fileID: 0}
   showDebugGizoms: 0
   horizontalRayCount: 4
   verticalRayCount: 4
+  _shrinkWidth: 0.1
+  _minRayLength: 0.1
+  _collider2D: {fileID: 0}
+  collisionMask: 0
+  _horizontalRaySpace: 0
+  _verticalRaySpace: 0
+  _rect:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
 --- !u!61 &788905711
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -974,6 +1142,21 @@ Transform:
   m_Father: {fileID: 1998625829}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &788905714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 788905709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f712e0715f57c724d96816de37e8f8e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTrigger: 0
+  offset: {x: 0, y: 0}
+  size: {x: 1, y: 0.65}
 --- !u!1 &921307313
 GameObject:
   m_ObjectHideFlags: 0
@@ -986,6 +1169,7 @@ GameObject:
   - component: {fileID: 921307317}
   - component: {fileID: 921307316}
   - component: {fileID: 921307315}
+  - component: {fileID: 921307318}
   m_Layer: 0
   m_Name: Up
   m_TagString: Untagged
@@ -1019,9 +1203,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e6a71b2a4ac2a240a74f0d708e5a3f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transform: {fileID: 0}
   showDebugGizoms: 0
   horizontalRayCount: 4
   verticalRayCount: 4
+  _shrinkWidth: 0.1
+  _minRayLength: 0.1
+  _collider2D: {fileID: 0}
+  collisionMask: 0
+  _horizontalRaySpace: 0
+  _verticalRaySpace: 0
+  _rect:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
 --- !u!61 &921307316
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1099,6 +1295,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &921307318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 921307313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f712e0715f57c724d96816de37e8f8e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTrigger: 0
+  offset: {x: 0, y: 0}
+  size: {x: 1, y: 0.65}
 --- !u!1 &997687457
 GameObject:
   m_ObjectHideFlags: 0
@@ -1112,6 +1323,7 @@ GameObject:
   - component: {fileID: 997687459}
   - component: {fileID: 997687458}
   - component: {fileID: 997687462}
+  - component: {fileID: 997687463}
   m_Layer: 0
   m_Name: Item
   m_TagString: Untagged
@@ -1157,11 +1369,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showDebugGizoms: 1
+  _transform: {fileID: 0}
+  showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
+  _shrinkWidth: 0.1
+  _minRayLength: 0.1
+  _collider2D: {fileID: 0}
+  collisionMask: 0
+  _horizontalRaySpace: 0
+  _verticalRaySpace: 0
+  _rect:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
   gravityScale: 0
   collisionDetectionMode: 1
+  _velocity: {x: 0, y: 0}
+  _colliderIsTrigger: 0
+  _physicsManager: {fileID: 0}
+  _movement: {x: 0, y: 0, z: 0}
+  _raycastDirection: {x: 0, y: 0}
 --- !u!212 &997687460
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1242,6 +1471,21 @@ MonoBehaviour:
   normalMaterial: {fileID: 2100000, guid: c48af4c4f8e4c0f4296154d38f141881, type: 2}
   hitMaterial: {fileID: 2100000, guid: 4037a043b75fae64c8da4f6b420676a1, type: 2}
   randomSpeed: 20
+--- !u!114 &997687463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 997687457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f712e0715f57c724d96816de37e8f8e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTrigger: 0
+  offset: {x: 0, y: 0}
+  size: {x: 1, y: 0.65}
 --- !u!1 &1076572214
 GameObject:
   m_ObjectHideFlags: 0
@@ -1255,6 +1499,7 @@ GameObject:
   - component: {fileID: 1076572217}
   - component: {fileID: 1076572216}
   - component: {fileID: 1076572215}
+  - component: {fileID: 1076572220}
   m_Layer: 0
   m_Name: Item (6)
   m_TagString: Untagged
@@ -1315,11 +1560,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transform: {fileID: 0}
   showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
+  _shrinkWidth: 0.1
+  _minRayLength: 0.1
+  _collider2D: {fileID: 0}
+  collisionMask: 0
+  _horizontalRaySpace: 0
+  _verticalRaySpace: 0
+  _rect:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
   gravityScale: 0
   collisionDetectionMode: 0
+  _velocity: {x: 0, y: 0}
+  _colliderIsTrigger: 0
+  _physicsManager: {fileID: 0}
+  _movement: {x: 0, y: 0, z: 0}
+  _raycastDirection: {x: 0, y: 0}
 --- !u!212 &1076572218
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1385,6 +1647,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1076572220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1076572214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f712e0715f57c724d96816de37e8f8e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTrigger: 0
+  offset: {x: 0, y: 0}
+  size: {x: 1, y: 0.65}
 --- !u!1 &1088137830
 GameObject:
   m_ObjectHideFlags: 0
@@ -1398,6 +1675,7 @@ GameObject:
   - component: {fileID: 1088137833}
   - component: {fileID: 1088137832}
   - component: {fileID: 1088137831}
+  - component: {fileID: 1088137836}
   m_Layer: 0
   m_Name: Item (1)
   m_TagString: Untagged
@@ -1458,11 +1736,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transform: {fileID: 0}
   showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
+  _shrinkWidth: 0.1
+  _minRayLength: 0.1
+  _collider2D: {fileID: 0}
+  collisionMask: 0
+  _horizontalRaySpace: 0
+  _verticalRaySpace: 0
+  _rect:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
   gravityScale: 0
   collisionDetectionMode: 0
+  _velocity: {x: 0, y: 0}
+  _colliderIsTrigger: 0
+  _physicsManager: {fileID: 0}
+  _movement: {x: 0, y: 0, z: 0}
+  _raycastDirection: {x: 0, y: 0}
 --- !u!212 &1088137834
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1528,6 +1823,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1088137836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088137830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f712e0715f57c724d96816de37e8f8e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTrigger: 0
+  offset: {x: 0, y: 0}
+  size: {x: 1, y: 0.65}
 --- !u!1 &1089958592
 GameObject:
   m_ObjectHideFlags: 0
@@ -1540,6 +1850,7 @@ GameObject:
   - component: {fileID: 1089958596}
   - component: {fileID: 1089958595}
   - component: {fileID: 1089958594}
+  - component: {fileID: 1089958597}
   m_Layer: 0
   m_Name: Left
   m_TagString: Untagged
@@ -1573,9 +1884,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e6a71b2a4ac2a240a74f0d708e5a3f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transform: {fileID: 0}
   showDebugGizoms: 0
   horizontalRayCount: 4
   verticalRayCount: 4
+  _shrinkWidth: 0.1
+  _minRayLength: 0.1
+  _collider2D: {fileID: 0}
+  collisionMask: 0
+  _horizontalRaySpace: 0
+  _verticalRaySpace: 0
+  _rect:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
 --- !u!61 &1089958595
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1653,6 +1976,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1089958597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089958592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f712e0715f57c724d96816de37e8f8e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTrigger: 0
+  offset: {x: 0, y: 0}
+  size: {x: 1, y: 0.65}
 --- !u!1 &1275317352
 GameObject:
   m_ObjectHideFlags: 0
@@ -1666,6 +2004,7 @@ GameObject:
   - component: {fileID: 1275317355}
   - component: {fileID: 1275317354}
   - component: {fileID: 1275317353}
+  - component: {fileID: 1275317358}
   m_Layer: 0
   m_Name: Item (9)
   m_TagString: Untagged
@@ -1726,11 +2065,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transform: {fileID: 0}
   showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
+  _shrinkWidth: 0.1
+  _minRayLength: 0.1
+  _collider2D: {fileID: 0}
+  collisionMask: 0
+  _horizontalRaySpace: 0
+  _verticalRaySpace: 0
+  _rect:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
   gravityScale: 0
   collisionDetectionMode: 0
+  _velocity: {x: 0, y: 0}
+  _colliderIsTrigger: 0
+  _physicsManager: {fileID: 0}
+  _movement: {x: 0, y: 0, z: 0}
+  _raycastDirection: {x: 0, y: 0}
 --- !u!212 &1275317356
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1796,6 +2152,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1275317358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1275317352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f712e0715f57c724d96816de37e8f8e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTrigger: 0
+  offset: {x: 0, y: 0}
+  size: {x: 1, y: 0.65}
 --- !u!1 &1338225095
 GameObject:
   m_ObjectHideFlags: 0
@@ -1822,7 +2193,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1338225095}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ccf44bdf5c9099f4d8475aa6587d59f8, type: 3}
+  m_Script: {fileID: 11500000, guid: 7e94c94a635bdb445ae9594a3f10c6c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &1338225097
@@ -1852,6 +2223,7 @@ GameObject:
   - component: {fileID: 1816804425}
   - component: {fileID: 1816804424}
   - component: {fileID: 1816804423}
+  - component: {fileID: 1816804428}
   m_Layer: 0
   m_Name: Item (8)
   m_TagString: Untagged
@@ -1912,11 +2284,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transform: {fileID: 0}
   showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
+  _shrinkWidth: 0.1
+  _minRayLength: 0.1
+  _collider2D: {fileID: 0}
+  collisionMask: 0
+  _horizontalRaySpace: 0
+  _verticalRaySpace: 0
+  _rect:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
   gravityScale: 0
   collisionDetectionMode: 0
+  _velocity: {x: 0, y: 0}
+  _colliderIsTrigger: 0
+  _physicsManager: {fileID: 0}
+  _movement: {x: 0, y: 0, z: 0}
+  _raycastDirection: {x: 0, y: 0}
 --- !u!212 &1816804426
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1982,6 +2371,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1816804428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1816804422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f712e0715f57c724d96816de37e8f8e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTrigger: 0
+  offset: {x: 0, y: 0}
+  size: {x: 1, y: 0.65}
 --- !u!1 &1998625828
 GameObject:
   m_ObjectHideFlags: 0
@@ -2006,7 +2410,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1998625828}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.78950655, y: -0.8171556, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 788905713}
@@ -2113,6 +2517,7 @@ GameObject:
   - component: {fileID: 2075770449}
   - component: {fileID: 2075770448}
   - component: {fileID: 2075770447}
+  - component: {fileID: 2075770452}
   m_Layer: 0
   m_Name: Item (3)
   m_TagString: Untagged
@@ -2173,11 +2578,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transform: {fileID: 0}
   showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
+  _shrinkWidth: 0.1
+  _minRayLength: 0.1
+  _collider2D: {fileID: 0}
+  collisionMask: 0
+  _horizontalRaySpace: 0
+  _verticalRaySpace: 0
+  _rect:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
   gravityScale: 0
   collisionDetectionMode: 0
+  _velocity: {x: 0, y: 0}
+  _colliderIsTrigger: 0
+  _physicsManager: {fileID: 0}
+  _movement: {x: 0, y: 0, z: 0}
+  _raycastDirection: {x: 0, y: 0}
 --- !u!212 &2075770450
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2243,6 +2665,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2075770452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2075770446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f712e0715f57c724d96816de37e8f8e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTrigger: 0
+  offset: {x: 0, y: 0}
+  size: {x: 1, y: 0.65}
 --- !u!1 &2077486570
 GameObject:
   m_ObjectHideFlags: 0
@@ -2256,6 +2693,7 @@ GameObject:
   - component: {fileID: 2077486573}
   - component: {fileID: 2077486572}
   - component: {fileID: 2077486571}
+  - component: {fileID: 2077486576}
   m_Layer: 0
   m_Name: Item (2)
   m_TagString: Untagged
@@ -2316,11 +2754,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c189568d14c854ab2bd8a0fd2eb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transform: {fileID: 0}
   showDebugGizoms: 0
   horizontalRayCount: 3
   verticalRayCount: 3
+  _shrinkWidth: 0.1
+  _minRayLength: 0.1
+  _collider2D: {fileID: 0}
+  collisionMask: 0
+  _horizontalRaySpace: 0
+  _verticalRaySpace: 0
+  _rect:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
   gravityScale: 0
   collisionDetectionMode: 0
+  _velocity: {x: 0, y: 0}
+  _colliderIsTrigger: 0
+  _physicsManager: {fileID: 0}
+  _movement: {x: 0, y: 0, z: 0}
+  _raycastDirection: {x: 0, y: 0}
 --- !u!212 &2077486574
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2386,3 +2841,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2077486576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2077486570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f712e0715f57c724d96816de37e8f8e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTrigger: 0
+  offset: {x: 0, y: 0}
+  size: {x: 1, y: 0.65}
