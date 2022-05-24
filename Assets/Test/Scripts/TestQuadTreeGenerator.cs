@@ -18,7 +18,7 @@ namespace CustomPhysics2D.Test
 			var rectPos = this.transform.position - new Vector3( width / 2, height / 2 );
 			var worldRect = new Rect( rectPos, new Vector2( width, height ) );
 			CustomPhysicsManager.instance.CreateQuadTree( worldRect, maxDepth );
-			CustomPhysicsManager.instance.quadTree.NeedDebug = true;
+			CustomPhysicsManager.instance.SelfQuadTree.NeedDebug = true;
 			CustomPhysicsManager.useUnityRayCast = false;
 		}
 

@@ -7,16 +7,6 @@ namespace CustomPhysics2D
 	public static class Extension
 	{
 		/// <summary>
-		/// Get CppRigidbody
-		/// </summary>
-		/// <param name="collider"></param>
-		/// <returns></returns>
-		public static CustomRigidbody2D Rigidbody(this CustomCollider2D collider)
-		{
-			return CustomPhysicsManager.instance.GetRigidbody(collider);
-		}
-
-		/// <summary>
 		/// Check if a LayerMask contains a specific layer.
 		/// </summary>
 		/// <param name="">Layer That Contains</param>

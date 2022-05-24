@@ -114,7 +114,7 @@ namespace CustomPhysics2D
 			_currentDetectionHitColliders.Clear();
 
 			// Prepare Collision Info
-			this.PrepareCollisionInfo();
+			PrepareCollisionInfo();
 
 			if (float.IsNaN(_movement.x))
 			{
@@ -126,10 +126,10 @@ namespace CustomPhysics2D
 			}
 
 			// Horizontal
-			this.HorizontalCollisionDetect();
+			HorizontalCollisionDetect();
 
 			// Vertical
-			this.VerticalCollisionDetect();
+			VerticalCollisionDetect();
 			Profiler.EndSample();
 		}
 
@@ -232,7 +232,7 @@ namespace CustomPhysics2D
 					else
 					{
 						_jraycastHitList.Clear();
-						CustomPhysics2D.Raycast(CustomPhysicsManager.instance.quadTree, rayOrigin, _raycastDirection, ref _jraycastHitList, rayLength, this.collisionMask);
+						CustomPhysics2D.Raycast(CustomPhysicsManager.instance.SelfQuadTree, rayOrigin, _raycastDirection, ref _jraycastHitList, rayLength, this.collisionMask);
 						for (int j = 0; j < _jraycastHitList.count; j++)
 						{
 							var hit = _jraycastHitList[j];
@@ -294,7 +294,7 @@ namespace CustomPhysics2D
 					else
 					{
 						_jraycastHitList.Clear();
-						CustomPhysics2D.Raycast(CustomPhysicsManager.instance.quadTree, rayOrigin, _raycastDirection, ref _jraycastHitList, rayLength, collisionMask);
+						CustomPhysics2D.Raycast(CustomPhysicsManager.instance.SelfQuadTree, rayOrigin, _raycastDirection, ref _jraycastHitList, rayLength, collisionMask);
 						for (int j = 0; j < _jraycastHitList.count; j++)
 						{
 							var hit = _jraycastHitList[j];

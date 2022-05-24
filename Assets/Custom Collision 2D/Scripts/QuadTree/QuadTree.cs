@@ -96,7 +96,7 @@ namespace CustomPhysics2D
         internal void UpdateItem(IQuadTreeItem item)
         {
             var newPosInfo = item.CurrentPosInQuadTree;
-            GetPosInfo(item.Center, item.Size, ref newPosInfo);
+            GetPosInfo(item.ItemCenter, item.ItemSize, ref newPosInfo);
             if (newPosInfo.Equals(item.LastPosInQuadTree) && !newPosInfo.inRoot) return;
 
             var lastPosInfo = item.LastPosInQuadTree;

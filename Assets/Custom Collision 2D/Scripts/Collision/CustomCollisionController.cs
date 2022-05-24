@@ -8,6 +8,7 @@ namespace CustomPhysics2D
 {
 	public delegate void CollisionEvent(CollisionInfo2D collisionInfo);
 
+	[RequireComponent(typeof(CustomCollider2D))]
 	public class CustomCollisionController : MonoBehaviour, IQuadTreeItem
 	{
 		protected const int MAX_HIT_COLLIDER_COUNT = 20;
@@ -53,8 +54,8 @@ namespace CustomPhysics2D
 
 		public CustomCollider2D SelfCollider => _collider2D;
 		protected Bounds SelfBounds => _collider2D.SelfBounds;
-		public Vector2 Size => _collider2D.SelfBounds.size;
-		public Vector2 Center => _collider2D.SelfBounds.center;
+		public Vector2 ItemSize => _collider2D.SelfBounds.size;
+		public Vector2 ItemCenter => _collider2D.SelfBounds.center;
 		public Rect ItemRect => _rect;
 		public PositionInQuadTree LastPosInQuadTree
 		{
@@ -134,8 +135,8 @@ namespace CustomPhysics2D
 
 		public void InitializePosInQuadTree(QuadTree quadTree)
 		{
-			_lastPosInQuadTree = new PositionInQuadTree(quadTree.GetDepth(Size));
-			_currentPosInQuadTree = new PositionInQuadTree(quadTree.GetDepth(Size));
+			_lastPosInQuadTree = new PositionInQuadTree(quadTree.GetDepth(ItemSize));
+			_currentPosInQuadTree = new PositionInQuadTree(quadTree.GetDepth(ItemSize));
 		}
 
 		protected void UpdateRect()

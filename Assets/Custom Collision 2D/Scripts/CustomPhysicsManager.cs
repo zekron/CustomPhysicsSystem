@@ -55,7 +55,7 @@ namespace CustomPhysics2D
 		private Dictionary<CustomCollider2D, CustomPlatform2D> _platforms = new Dictionary<CustomCollider2D, CustomPlatform2D>();
 		#endregion
 
-		public QuadTree quadTree => _quadTree;
+		public QuadTree SelfQuadTree => _quadTree;
 
 		public CustomPhysicsSetting setting
 		{
@@ -134,9 +134,9 @@ namespace CustomPhysics2D
 			{
 				yield return _waitForFixedUpdate;
 
-				this.HandleCollidersEnter();
+				HandleCollidersEnter();
 
-				this.HandleCollidersExit();
+				HandleCollidersExit();
 
 				_currentFrameHitColliders.Clear();
 				_currentFrameHitRigidbodies.Clear();
@@ -150,7 +150,7 @@ namespace CustomPhysics2D
 			{
 				if (!_lastFrameHitColliders.Contains(currentFrameCollision))
 				{
-					ContactEvent(currentFrameCollision, true);
+					ContactEnterEvent(currentFrameCollision);
 					_lastFrameHitColliders.Add(currentFrameCollision);
 				}
 			}
@@ -160,7 +160,7 @@ namespace CustomPhysics2D
 			{
 				if (!_lastFrameHitRigidbodies.Contains(collision))
 				{
-					ContactEvent(collision, true);
+					ContactEnterEvent(collision);
 					_lastFrameHitRigidbodies.Add(collision);
 				}
 			}
@@ -172,7 +172,7 @@ namespace CustomPhysics2D
 			{
 				if (!_currentFrameHitColliders.Contains(lastFrameCollision) || lastFrameCollision.collider == null || lastFrameCollision.hitCollider == null)
 				{
-					this.ContactEvent(lastFrameCollision, false);
+					ContactExitEvent(lastFrameCollision);
 					_toBeRemovedCollisions.Add(lastFrameCollision);
 				}
 			}
@@ -187,7 +187,7 @@ namespace CustomPhysics2D
 			{
 				if (!_currentFrameHitRigidbodies.Contains(collision) || collision.collider == null || collision.hitCollider == null)
 				{
-					this.ContactEvent(collision, false);
+					ContactExitEvent(collision);
 					_toBeRemovedCollisions.Add(collision);
 				}
 			}
@@ -199,100 +199,114 @@ namespace CustomPhysics2D
 
 			_toBeRemovedCollisions.Clear();
 		}
-
-		private void ContactEvent(CollisionInfo2D collisionInfo, bool isBeginEvent)
+		private void ContactEnterEvent(CollisionInfo2D collisionInfo)
 		{
 			if (collisionInfo.hitCollider == null || collisionInfo.collider == null) return;
 
-			if (collisionInfo.collider.IsTrigger || collisionInfo.hitCollider.IsTrigger)
-			{
-				// Trigger Event
-				SendCollisionMessage(collisionInfo, isBeginEvent, true);
-			}
-			else
-			{
-				// Collision Event
-				SendCollisionMessage(collisionInfo, isBeginEvent, false);
-			}
+			SendEnterEventMessage(collisionInfo,
+						 collisionInfo.collider.IsTrigger || collisionInfo.hitCollider.IsTrigger);
+		}
+		private void ContactExitEvent(CollisionInfo2D collisionInfo)
+		{
+			if (collisionInfo.hitCollider == null || collisionInfo.collider == null) return;
+
+			SendExitEventMessage(collisionInfo,
+						collisionInfo.collider.IsTrigger || collisionInfo.hitCollider.IsTrigger);
 		}
 
-		private void SendCollisionMessage(CollisionInfo2D collisionInfo, bool isBeginEvent, bool isTriggerEvent)
+		private void SendEnterEventMessage(CollisionInfo2D collisionInfo, bool isTriggerEvent)
 		{
 			var rigidbody = GetRigidbody(collisionInfo.collider);
 			var hitCollider = collisionInfo.hitCollider;
 			var hitRigidbody = GetRigidbody(collisionInfo.hitCollider);
-
-			if (isBeginEvent)
+			var platform = GetPlatform(collisionInfo.hitCollider);
+			if (rigidbody != null)  //本方刚体
 			{
-				if (rigidbody != null)  //本方刚体
-				{
-					if (isTriggerEvent)
-					{
-						rigidbody.onTriggerEnter?.Invoke(collisionInfo);
-					}
-					else
-					{
-						rigidbody.onCollisionEnter?.Invoke(collisionInfo);
-					}
-				}
+				RaiseEnterEvent(collisionInfo, isTriggerEvent, rigidbody);
 
-				// Switch collider & hitCollider
-				if (hitRigidbody != null)   //对方刚体
+				//只有刚体与其他物体才能发生碰撞
+				if (platform != null)
 				{
 					collisionInfo.hitCollider = collisionInfo.collider;
 					collisionInfo.collider = hitCollider;
+					Debug.LogFormat("{0} hits platform {1}.", collisionInfo.hitCollider.name, collisionInfo.collider.name);
 
-					if (isTriggerEvent)
-					{
-						hitRigidbody.onTriggerEnter?.Invoke(collisionInfo);
-					}
-					else
-					{
-						hitRigidbody.onCollisionEnter?.Invoke(collisionInfo);
-					}
+					RaiseEnterEvent(collisionInfo, isTriggerEvent, platform);
 				}
-				else
-				{
-					var controller = hitCollider.GetComponent<CustomCollisionController>();
-					if (controller is CustomPlatform2D)
-					{
-						Debug.Log("Hit platform");
-					}
-					//collisionInfo.hitCollider.gameObject.SendMessage( isTriggerEvent ? _triggerBeginEventName : _collisionBeginEventName,
-					//	collisionInfo, SendMessageOptions.DontRequireReceiver );
-				}
+			}
+
+			// Switch collider & hitCollider
+			if (hitRigidbody != null)   //对方刚体
+			{
+				collisionInfo.hitCollider = collisionInfo.collider;
+				collisionInfo.collider = hitCollider;
+
+				RaiseEnterEvent(collisionInfo, isTriggerEvent, hitRigidbody);
 			}
 			else
 			{
-				if (rigidbody != null)
-				{
-					if (isTriggerEvent)
-					{
-						rigidbody.onTriggerExit?.Invoke(collisionInfo);
-					}
-					else
-					{
-						rigidbody.onCollisionExit?.Invoke(collisionInfo);
-					}
-				}
+				//collisionInfo.hitCollider.gameObject.SendMessage( isTriggerEvent ? _triggerBeginEventName : _collisionBeginEventName,
+				//	collisionInfo, SendMessageOptions.DontRequireReceiver );
+			}
+		}
 
-				// Switch collider & hitCollider
-				if (hitRigidbody != null)
+		private void SendExitEventMessage(CollisionInfo2D collisionInfo, bool isTriggerEvent)
+		{
+			var rigidbody = GetRigidbody(collisionInfo.collider);
+			var hitCollider = collisionInfo.hitCollider;
+			var hitRigidbody = GetRigidbody(collisionInfo.hitCollider);
+			var platform = GetPlatform(collisionInfo.hitCollider);
+
+			if (rigidbody != null)
+			{
+				RaiseExitEvent(collisionInfo, isTriggerEvent, rigidbody);
+
+				//只有刚体与其他物体才能发生碰撞
+				if (platform != null)
 				{
-					if (isTriggerEvent)
-					{
-						hitRigidbody.onTriggerExit?.Invoke(collisionInfo);
-					}
-					else
-					{
-						hitRigidbody.onCollisionExit?.Invoke(collisionInfo);
-					}
+					collisionInfo.hitCollider = collisionInfo.collider;
+					collisionInfo.collider = hitCollider;
+					Debug.LogFormat("{0} leaves platform {1}.", collisionInfo.hitCollider.name, collisionInfo.collider.name);
+
+					RaiseExitEvent(collisionInfo, isTriggerEvent, platform);
 				}
-				else
-				{
-					//collisionInfo.hitCollider.gameObject.SendMessage( isTriggerEvent ? _triggerEndEventName : _collisionEndEventName,
-					//	collisionInfo, SendMessageOptions.DontRequireReceiver );
-				}
+			}
+
+			// Switch collider & hitCollider
+			if (hitRigidbody != null)
+			{
+				RaiseExitEvent(collisionInfo, isTriggerEvent, hitRigidbody);
+			}
+			else
+			{
+				//collisionInfo.hitCollider.gameObject.SendMessage( isTriggerEvent ? _triggerEndEventName : _collisionEndEventName,
+				//	collisionInfo, SendMessageOptions.DontRequireReceiver );
+			}
+		}
+
+		private static void RaiseEnterEvent(CollisionInfo2D collisionInfo, bool isTriggerEvent, CustomCollisionController controller)
+		{
+			Debug.LogFormat("Controller {0} raises enter event.", controller.name);
+			if (isTriggerEvent)
+			{
+				controller.onTriggerEnter?.Invoke(collisionInfo);
+			}
+			else
+			{
+				controller.onCollisionEnter?.Invoke(collisionInfo);
+			}
+		}
+
+		private static void RaiseExitEvent(CollisionInfo2D collisionInfo, bool isTriggerEvent, CustomCollisionController controller)
+		{
+			Debug.LogFormat("Controller {0} raises exit event.", controller.name);
+			if (isTriggerEvent)
+			{
+				controller.onTriggerExit?.Invoke(collisionInfo);
+			}
+			else
+			{
+				controller.onCollisionExit?.Invoke(collisionInfo);
 			}
 		}
 
@@ -351,6 +365,15 @@ namespace CustomPhysics2D
 			if (platform == null) return;
 
 			_platforms.Remove(platform.SelfCollider);
+		}
+
+		public CustomPlatform2D GetPlatform(CustomCollider2D collider)
+		{
+			if (collider == null) return null;
+
+			CustomPlatform2D platform = null;
+			_platforms.TryGetValue(collider, out platform);
+			return platform;
 		}
 	}
 }

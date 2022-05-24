@@ -5,11 +5,11 @@ namespace CustomPhysics2D
 {
     public interface IQuadTreeItem
     {
-        Vector2 Size
+        Vector2 ItemSize
         {
             get;
         }
-        Vector2 Center
+        Vector2 ItemCenter
         {
             get;
         }

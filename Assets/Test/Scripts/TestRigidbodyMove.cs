@@ -50,7 +50,7 @@ namespace CustomPhysics2D.Test
         {
             var width = _jRigidbody.ItemRect.width;
             var height = _jRigidbody.ItemRect.height;
-            var worldRect = CustomPhysicsManager.instance.quadTree.WorldRect;
+            var worldRect = CustomPhysicsManager.instance.SelfQuadTree.WorldRect;
             //_destPoint.x = Random.Range( worldRect.xMin, worldRect.xMax );
             //_destPoint.y = Random.Range( worldRect.yMin, worldRect.yMax );
             _destPoint.x = Random.Range(worldRect.xMin + width / 2, worldRect.xMax - width / 2);
