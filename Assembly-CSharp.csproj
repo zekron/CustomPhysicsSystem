@@ -8,7 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{8773949A-B466-C561-D4F5-1939C60B6359}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -667,6 +668,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="CustomCollistion2D.csproj">
+      <Project>{f7505426-08b8-b96f-56b9-841be573e110}</Project>
+      <Name>CustomCollistion2D</Name>
+    </ProjectReference>
     <ProjectReference Include="CustomCollistionSystem2D.csproj">
       <Project>{5730F023-F758-38E5-B860-99A340BB57F6}</Project>
       <Name>CustomCollistionSystem2D</Name>

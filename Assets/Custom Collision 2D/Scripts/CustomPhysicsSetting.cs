@@ -15,24 +15,18 @@ namespace CustomPhysics2D
 	public class CustomPhysicsSetting : ScriptableObject
 	{
 		#region Gravity
-		public Vector2 gravity
-		{
-			get
-			{
-				return _gravity * gravityScale;
-			}
-		}
+		public Vector2 Gravity => _gravity * _gravityScale;
 
-		public float gravityScale
+		public float GravityScale
 		{
 			get
 			{
-				return this._gravityScale;
+				return _gravityScale;
 			}
 
 			set
 			{
-				this._gravityScale = value;
+				_gravityScale = value;
 			}
 		}
 		protected float _gravityScale = 1.0f;
@@ -49,9 +43,9 @@ namespace CustomPhysics2D
 
 		public LayerMask GetCollisionMask( int layer )
 		{
-			for( int i = 0; i < this.collisionLayerMasks.Count; i++ )
+			for( int i = 0; i < collisionLayerMasks.Count; i++ )
 			{
-				var collisionLayerMask = this.collisionLayerMasks[i];
+				var collisionLayerMask = collisionLayerMasks[i];
 				if( collisionLayerMask.layer == layer )
 				{
 					return collisionLayerMask.layerMask;
