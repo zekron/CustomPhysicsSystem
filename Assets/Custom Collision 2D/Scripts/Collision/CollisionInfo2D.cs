@@ -8,11 +8,11 @@ namespace CustomPhysics2D
 		/// <summary>
 		/// Self collider
 		/// </summary>
-		internal CustomCollider2D collider;
+		public CustomCollider2D collider { get; internal set; }
 		/// <summary>
 		/// Other collider
 		/// </summary>
-		internal CustomCollider2D hitCollider;
+		public CustomCollider2D hitCollider { get; internal set; }
 		internal HitColliderDirection HitDirection;
 		internal Vector2 position;
 
@@ -23,7 +23,7 @@ namespace CustomPhysics2D
 
 		public override int GetHashCode()
 		{
-			return this.collider.GetHashCode() + this.hitCollider.GetHashCode();
+			return collider.GetHashCode() + hitCollider.GetHashCode();
 		}
 
 		public void Reset()

@@ -64,7 +64,7 @@ namespace CustomPhysics2D
 
 		private void Awake()
 		{
-			setting = Instantiate(Resources.Load<CustomPhysicsSetting>("JPhysics Settings"));
+			setting = Instantiate(Resources.Load<CustomPhysicsSetting>("Custom Physics Settings"));
 
 			useUnityRayCast = false;
 			needUpdateCollision = true;
@@ -286,7 +286,7 @@ namespace CustomPhysics2D
 
 		private static void RaiseEnterEvent(CollisionInfo2D collisionInfo, bool isTriggerEvent, CustomCollisionController controller)
 		{
-			Debug.LogFormat("Controller {0} raises enter event.", controller.name);
+			Debug.LogFormat("Controller {0} raises {1} enter event.", controller.name, isTriggerEvent ? "trigger" : "collision");
 			if (isTriggerEvent)
 			{
 				controller.onTriggerEnter?.Invoke(collisionInfo);
@@ -299,7 +299,7 @@ namespace CustomPhysics2D
 
 		private static void RaiseExitEvent(CollisionInfo2D collisionInfo, bool isTriggerEvent, CustomCollisionController controller)
 		{
-			Debug.LogFormat("Controller {0} raises exit event.", controller.name);
+			Debug.LogFormat("Controller {0} raises {1} exit event.", controller.name, isTriggerEvent ? "trigger" : "collision");
 			if (isTriggerEvent)
 			{
 				controller.onTriggerExit?.Invoke(collisionInfo);

@@ -27,11 +27,11 @@ namespace CustomPhysics2D
 		/// <summary>
 		/// When collision detection, place the start point at the vertex of the bounds with zoom in by this distance
 		/// </summary>
-		protected float _shrinkWidth = 0.1f;
+		protected float _shrinkWidth = 0.01f;
 		/// <summary>
 		/// When movement is zero, rayLength = _shringkWidth + _expandWidth
 		/// </summary>
-		protected float _minRayLength = 0.1f;
+		protected float _minRayLength = 0.01f;
 		protected CustomCollider2D _collider2D;
 
 		protected int collisionMask;
@@ -84,12 +84,14 @@ namespace CustomPhysics2D
 		{
 			_collider2D = GetComponent<CustomCollider2D>();
 
-			Vector2 rectMin = SelfBounds.min;
-			_rect = new Rect(rectMin, SelfBounds.size);
-
 			_raycastHit2D = new RaycastHit2D[MAX_HIT_COLLIDER_COUNT];
 			_jraycastHitList = new CustomRaycastHitList(MAX_HIT_COLLIDER_COUNT);
 			_transform = transform;
+		}
+
+		void Start()
+		{
+			_rect = new Rect(_collider2D.SelfBounds.min, _collider2D.SelfBounds.size);
 		}
 
 		private void OnDestroy()
@@ -102,10 +104,11 @@ namespace CustomPhysics2D
 
 		private void OnDrawGizmos()
 		{
-			if (!showDebugGizoms) return;
+			//if (!showDebugGizoms) return;
 
 			Gizmos.color = Color.red;
 			_collider2D = GetComponent<CustomCollider2D>();
+			_rect = new Rect(_collider2D.SelfBounds.min, _collider2D.SelfBounds.size);
 			Gizmos.DrawWireCube(_rect.center, _rect.size);
 
 			UpdateRaycastOrigins();

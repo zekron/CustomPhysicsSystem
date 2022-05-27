@@ -219,7 +219,7 @@ namespace CustomPhysics2D
 					Debug.DrawLine(rayOrigin, rayOrigin + _raycastDirection * rayLength, Color.red);
 					if (CustomPhysicsManager.useUnityRayCast)
 					{
-						var hitCount = Physics2D.RaycastNonAlloc(rayOrigin, _raycastDirection, _raycastHit2D, rayLength, this.collisionMask);
+						var hitCount = Physics2D.RaycastNonAlloc(rayOrigin, _raycastDirection, _raycastHit2D, rayLength, collisionMask);
 						for (int j = 0; j < hitCount; j++)
 						{
 							var hit = _raycastHit2D[j];
@@ -232,14 +232,15 @@ namespace CustomPhysics2D
 					else
 					{
 						_jraycastHitList.Clear();
-						CustomPhysics2D.Raycast(CustomPhysicsManager.instance.SelfQuadTree, rayOrigin, _raycastDirection, ref _jraycastHitList, rayLength, this.collisionMask);
+						CustomPhysics2D.Raycast(CustomPhysicsManager.instance.SelfQuadTree, rayOrigin, _raycastDirection, ref _jraycastHitList, rayLength, collisionMask);
 						for (int j = 0; j < _jraycastHitList.count; j++)
 						{
 							var hit = _jraycastHitList[j];
 							if (_ignoredColliders.Contains(hit.collider)) continue;
 
 							HandleHitResult(hit.collider, hit.point, hitDirection);
-							ReviseMovement(hit.distance, hitDirection);
+							if (!(hit.collider.IsTrigger || _colliderIsTrigger))
+								ReviseMovement(hit.distance, hitDirection);
 						}
 					}
 					rayOrigin.y += _horizontalRaySpace;
@@ -301,7 +302,8 @@ namespace CustomPhysics2D
 							if (_ignoredColliders.Contains(hit.collider)) continue;
 
 							HandleHitResult(hit.collider, hit.point, hitDirection);
-							ReviseMovement(hit.distance, hitDirection);
+							if (!(hit.collider.IsTrigger || _colliderIsTrigger))
+								ReviseMovement(hit.distance, hitDirection);
 						}
 					}
 

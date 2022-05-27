@@ -73,12 +73,9 @@ namespace CustomPhysics2D
 		/// <summary>
 		/// 计算一条射线和AABB是否相交
 		/// </summary>
-		public static void CalculateRayHit(CustomCollider2D collider, Vector2 origin, Vector2 dir, ref CustomRaycastHitList hitList, float distance, ref int hitCount)
+		private static void CalculateRayHit(CustomCollider2D collider, Vector2 origin, Vector2 dir, ref CustomRaycastHitList hitList, float distance, ref int hitCount)
 		{
-			if (RaycastHitExist(collider, hitList))
-			{
-				return;
-			}
+			if (RaycastHitExist(collider, hitList)) return;
 
 			var bounds = collider.SelfBounds;
 			if (bounds.Contains(origin))
@@ -86,36 +83,23 @@ namespace CustomPhysics2D
 				AddRayHitToList(collider, origin, 0f, ref hitList, ref hitCount);
 				return;
 			}
-			if (distance <= 0f)
-			{
-				return;
-			}
+			if (distance <= 0f) return;
 
 			var hit = false;
 			var destPoint = origin + dir * distance;
-			//ax + by + c = 0
+			//ax + by + c = 0 => (y2 - y1)a + (x1 - x2)b + (x2 * y1) - (y2 * x1) = 0
 			var a = destPoint.y - origin.y;
 			var b = origin.x - destPoint.x;
 			var c = destPoint.x * origin.y - destPoint.y * origin.x;
 
-			var x1 = origin.x;
-			var x2 = destPoint.x;
-			if (x1 > x2)
-			{
-				x1 = destPoint.x;
-				x2 = origin.x;
-			}
-			var y1 = origin.y;
-			var y2 = destPoint.y;
-			if (y1 > y2)
-			{
-				y1 = destPoint.y;
-				y2 = origin.y;
-			}
-			var xMin = bounds.min.x;
-			var xMax = bounds.max.x;
-			var yMin = bounds.min.y;
-			var yMax = bounds.max.y;
+			var rayRectXMin = Mathf.Min(origin.x, destPoint.x);
+			var rayRectXMax = Mathf.Max(origin.x, destPoint.x);
+			var rayRectYMin = Mathf.Min(origin.y, destPoint.y);
+			var rayRectYMax = Mathf.Max(origin.y, destPoint.y);
+
+			var boundsX = new float[] { bounds.min.x, bounds.max.x };
+			var boundsY = new float[] { bounds.min.y, bounds.max.y };
+
 			var hitDistance = float.MaxValue;
 			var hitPoint = Vector2.zero;
 			var tempHitPoint = Vector2.zero;
@@ -124,35 +108,22 @@ namespace CustomPhysics2D
 			//y = (-c - a * x )/b
 			if (b != 0f)
 			{
-				if (xMin < x2 && xMin > x1)
+				for (int cnt = 0; cnt < boundsX.Length; cnt++)
 				{
-					tempHitPoint.x = xMin;
-					var y = (-c - a * xMin) / b;
-					if (y < yMax && y > yMin)
+					if (boundsX[cnt] < rayRectXMax && boundsX[cnt] > rayRectXMin)
 					{
-						tempHitPoint.y = y;
-						hit = true;
-						var dis = (tempHitPoint - origin).magnitude;
-						if (dis < hitDistance)
+						tempHitPoint.x = boundsX[cnt];
+						var y = (-c - a * boundsX[cnt]) / b;
+						if (y < boundsY[1] && y > boundsY[0])
 						{
-							hitPoint = tempHitPoint;
-							hitDistance = dis;
-						}
-					}
-				}
-				if (xMax < x2 && xMax > x1)
-				{
-					tempHitPoint.x = xMax;
-					var y = (-c - a * xMax) / b;
-					if (y < yMax && y > yMin)
-					{
-						tempHitPoint.y = y;
-						hit = true;
-						var dis = (tempHitPoint - origin).magnitude;
-						if (dis < hitDistance)
-						{
-							hitPoint = tempHitPoint;
-							hitDistance = dis;
+							tempHitPoint.y = y;
+							hit = true;
+							var dis = (tempHitPoint - origin).magnitude;
+							if (dis < hitDistance)
+							{
+								hitPoint = tempHitPoint;
+								hitDistance = dis;
+							}
 						}
 					}
 				}
@@ -161,35 +132,22 @@ namespace CustomPhysics2D
 			//x = (-c - b * y )/a
 			if (a != 0f)
 			{
-				if (yMin < y2 && yMin > y1)
+				for (int cnt = 0; cnt < boundsY.Length; cnt++)
 				{
-					tempHitPoint.y = yMin;
-					var x = (-c - b * yMin) / a;
-					if (x < xMax && x > xMin)
+					if (boundsY[cnt] < rayRectYMax && boundsY[cnt] > rayRectYMin)
 					{
-						tempHitPoint.x = x;
-						hit = true;
-						var dis = (tempHitPoint - origin).magnitude;
-						if (dis < hitDistance)
+						tempHitPoint.y = boundsY[cnt];
+						var x = (-c - b * boundsY[cnt]) / a;
+						if (x < boundsX[1] && x > boundsX[0])
 						{
-							hitPoint = tempHitPoint;
-							hitDistance = dis;
-						}
-					}
-				}
-				if (yMax < y2 && yMax > y1)
-				{
-					tempHitPoint.y = yMax;
-					var x = (-c - b * yMax) / a;
-					if (x < xMax && x > xMin)
-					{
-						tempHitPoint.x = x;
-						hit = true;
-						var dis = (tempHitPoint - origin).magnitude;
-						if (dis < hitDistance)
-						{
-							hitPoint = tempHitPoint;
-							hitDistance = dis;
+							tempHitPoint.x = x;
+							hit = true;
+							var dis = (tempHitPoint - origin).magnitude;
+							if (dis < hitDistance)
+							{
+								hitPoint = tempHitPoint;
+								hitDistance = dis;
+							}
 						}
 					}
 				}

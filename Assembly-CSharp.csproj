@@ -668,13 +668,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="CustomCollistion2D.csproj">
-      <Project>{f7505426-08b8-b96f-56b9-841be573e110}</Project>
-      <Name>CustomCollistion2D</Name>
-    </ProjectReference>
-    <ProjectReference Include="CustomCollistionSystem2D.csproj">
-      <Project>{5730F023-F758-38E5-B860-99A340BB57F6}</Project>
-      <Name>CustomCollistionSystem2D</Name>
+    <ProjectReference Include="Custom-Collistion-2D.csproj">
+      <Project>{49820a31-103e-2329-f9cc-5a05d03b6919}</Project>
+      <Name>Custom-Collistion-2D</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -23,6 +23,8 @@ namespace CustomPhysics2D.Test
             _jRigidbody = GetComponent<CustomRigidbody2D>();
             _jRigidbody.onCollisionEnter += CollisionEnter;
             _jRigidbody.onCollisionExit += CollisionExit;
+            _jRigidbody.onTriggerEnter += TriggerEnter;
+            _jRigidbody.onTriggerExit += TriggerExit;
         }
 
         private void Start()
@@ -57,7 +59,17 @@ namespace CustomPhysics2D.Test
             _destPoint.y = Random.Range(worldRect.yMin + height / 2, worldRect.yMax - height / 2);
         }
 
-        private void CollisionEnter(CollisionInfo2D collisionInfo)
+		private void TriggerEnter(CollisionInfo2D other)
+		{
+			_renderer.material = hitMaterial;
+		}
+
+        private void TriggerExit(CollisionInfo2D other)
+		{
+			_renderer.material = normalMaterial;
+		}
+
+		private void CollisionEnter(CollisionInfo2D collisionInfo)
         {
             _renderer.material = hitMaterial;
         }
