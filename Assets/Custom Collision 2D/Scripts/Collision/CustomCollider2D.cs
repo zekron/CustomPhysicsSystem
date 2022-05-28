@@ -22,21 +22,19 @@ namespace CustomPhysics2D
 		public Rect SelfRect => rect;
 		public bool IsTrigger => isTrigger;
 
-#if !UNITY_EDITOR
-		private void Awake()
+		private void OnEnable()
 		{
 			Initialize();
 		}
-#else
 		void OnValidate()
 		{
 			Initialize();
 		}
-#endif
 
 		void FixedUpdate()
 		{
 			rect.center = bounds.center = colliderTransform.position.ToVector2() + scaledOffset;
+			RotateRect(colliderTransform.eulerAngles);
 		}
 
 		private void OnDrawGizmosSelected()
@@ -60,7 +58,7 @@ namespace CustomPhysics2D
 
 			rect.size = bounds.size = scaledSize;
 			rect.center = bounds.center = colliderTransform.position.ToVector2() + scaledOffset;
-			RotateRect(transform.eulerAngles);
+			RotateRect(colliderTransform.eulerAngles);
 		}
 
 		private void RotateRect(Vector3 eulerAngles)
